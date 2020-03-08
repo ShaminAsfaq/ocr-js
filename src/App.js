@@ -1,5 +1,6 @@
 import React from 'react';
 import fire from './fire';
+import worker from './tesseract';
 
 class App extends React.Component {
 
@@ -57,14 +58,18 @@ class App extends React.Component {
                 <div
                     style={{paddingBottom: '10px'}}
                 >
-                    <input hidden type="file" multiple 
+                    <input hidden id="file" type="file" multiple 
                             onChange={(e) => { 
+                                // console.log(e.target.files);
                                 this.setState({
-                                        title: e.target.value
+                                        title: e.target.value,
+                                        files: e.target.files
                                 })
                             }
                         }
-                        className="inputfile" id="upload" />
+                        className="inputfile" id="upload"
+                        accept="image/*"
+                    />
                     <label htmlFor="upload" className="ui green button">
                         <i className="ui upload icon"></i> 
                         Upload image
@@ -74,7 +79,27 @@ class App extends React.Component {
                 <div
                     style={{paddingBottom: '10px'}}
                 >
-                    <button className="ui blue button" type="submit">Extract News</button>
+                    <button 
+                        className="ui blue button" 
+                        type="button"
+                        onClick = {() => {
+                                Object.values(this.state.files).forEach(item => {
+
+                                    // (async () => {
+                                    //     await worker.load();
+                                    //     await worker.loadLanguage('eng');
+                                    //     await worker.initialize('eng');
+                                    //     const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
+                                    //     console.log(text);
+                                    //     await worker.terminate();
+                                    //   })
+                                });
+                                // console.log(typeof Object.values(this.state.files));
+                            }
+                        }
+                    >
+                    Extract News
+                    </button>
                 </div>
 
                 <div className="field">
@@ -90,8 +115,12 @@ class App extends React.Component {
                 </div>
                 <button 
                     className="ui blue button"
-                    type="submit"
-                    onClick={this.onSubmit}
+                    type="button"
+                    // onClick={this.onSubmit}
+                    onClick={ () => {
+                        var fi = document.getElementById('file');
+                        console.log(fi)
+                    }}
                 >
                     Submit
                 </button>
