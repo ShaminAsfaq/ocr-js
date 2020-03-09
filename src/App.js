@@ -1,11 +1,18 @@
 import React from 'react';
 import fire from './fire';
 import worker from './tesseract';
+// import { createWorker } from 'tesseract.js';
+
+const { createWorker } = require('tesseract.js');
 
 class App extends React.Component {
 
     state = {};
-    element = {};
+    element = [];
+
+    worker = createWorker({
+        //   logger: m => console.log(m), // Add logger here
+    });
 
     onSubmit = (event) => {
         event.preventDefault();
@@ -58,11 +65,11 @@ class App extends React.Component {
                 <div
                     style={{paddingBottom: '10px'}}
                 >
-                    <input hidden id="file" type="file" multiple 
-                            onChange={(e) => { 
+                    <input hidden id="file" type="file" 
+                            onChange={(e) => {
                                 // console.log(e.target.files);
                                 this.setState({
-                                        title: e.target.value,
+                                        title: 'Uploaded',
                                         files: e.target.files
                                 })
                             }
@@ -74,7 +81,7 @@ class App extends React.Component {
                         <i className="ui upload icon"></i> 
                         Upload image
                     </label>
-                    <label>{ this.state.title || 'Select title image'}</label>
+                    <label>{ (this.state.title ? this.state.title : 'Select title image') }</label>
                 </div>
                 <div
                     style={{paddingBottom: '10px'}}
@@ -83,25 +90,40 @@ class App extends React.Component {
                         className="ui blue button" 
                         type="button"
                         onClick = {() => {
-                                Object.values(this.state.files).forEach(item => {
+                                    var list = Object.values(this.state.files);
+                                    var item = list[0];
+                                    console.log(item)
+                                    this.worker = createWorker({});
+                                    this.worker.load().then(() => {
+                                        console.log('--------- 1 ---------');
+                                        this.worker.loadLanguage('eng').then(() => {
+                                            console.log('--------- 2 ---------');
+                                            this.worker.initialize('eng').then(() => {
+                                                console.log('--------- 3 ---------');
+                                                    var blob = window.URL.createObjectURL(item);
+                                                    this.worker.recognize(blob).then((text) => {
+                                                        // console.log(`${blob}`);
+                                                        console.log(text.data.text);
+                                                    }).then(() => {
+                                                        // console.log(this.state.title)
+                                                        delete this.state.title
+                                                        this.setState({
+                                                            title: 'Select another image'
+                                                        })
 
-                                    // (async () => {
-                                    //     await worker.load();
-                                    //     await worker.loadLanguage('eng');
-                                    //     await worker.initialize('eng');
-                                    //     const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
-                                    //     console.log(text);
-                                    //     await worker.terminate();
-                                    //   })
-                                });
-                                // console.log(typeof Object.values(this.state.files));
-                            }
+                                                        // console.log(this.state.title)
+                                                        worker.terminate();
+                                                        console.log('--------- 4 ---------');
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    }
                         }
                     >
                     Extract News
                     </button>
                 </div>
-
                 <div className="field">
                     <div className="field">
                         <label>Story</label>
@@ -118,8 +140,6 @@ class App extends React.Component {
                     type="button"
                     // onClick={this.onSubmit}
                     onClick={ () => {
-                        var fi = document.getElementById('file');
-                        console.log(fi)
                     }}
                 >
                     Submit
