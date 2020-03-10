@@ -7,6 +7,7 @@ class Upload extends React.Component {
     state = {};
     initialState = {};
     element = {};
+    host = 'http://localhost:1050';
 
     constructor(props) {
         super(props);
@@ -25,7 +26,9 @@ class Upload extends React.Component {
         console.log(this.state.uploaded)
         if(!this.state.uploaded) {
             this.setState({
-                error: 'Please select an image first.'
+                error: 'Please select an image first.',
+                image: 'Please select an image first.',
+                imageColor: 'red'
             })
         } else {
             var list = Object.values(this.state.files);
@@ -51,13 +54,13 @@ class Upload extends React.Component {
 
                                 document.getElementById('textarea').value = this.state.news;
 
-
                                 console.log(this.state.news)
                             }).then(() => {
                                 // console.log(this.state.image)
                                 delete this.state.image
                                 this.setState({
-                                    image: 'Select another image'
+                                    image: 'Select another image',
+                                    imageColor: 'black'
                                 })
 
                                 // console.log(this.state.image)
@@ -80,7 +83,7 @@ class Upload extends React.Component {
             this.element = { title, category, date: new Date(this.state.date), news };
             console.log(this.element);
 
-            axios.post('http://localhost:8080/create_news', this.element).then((result) => {
+            axios.post(`${this.host}/create_news`, this.element).then((result) => {
                 console.log(result);
             })
 
@@ -171,7 +174,8 @@ class Upload extends React.Component {
                                 this.setState({
                                         image: 'Image Selected',
                                         files: e.target.files,
-                                        uploaded: true
+                                        uploaded: true,
+                                        imageColor: 'black'
                                 })
                             }
                         }
@@ -182,7 +186,7 @@ class Upload extends React.Component {
                         <i className="ui upload icon"></i> 
                         Upload image
                     </label>
-                    <label>{ (this.state.image ? this.state.image : 'Select image') }</label>
+                    <label style={{color: `${this.state.imageColor || 'black'}`}} >{ (this.state.image ? this.state.image : 'Select image') }</label>
                 </div>
                 <div
                     style={{paddingBottom: '10px'}}
