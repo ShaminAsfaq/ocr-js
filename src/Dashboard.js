@@ -10,7 +10,10 @@ class Upload extends React.Component {
     }
 
     onSearch = () => {
-        // var text = document.getElementById('search').value;
+        var text = document.getElementById('search').value;
+        this.setState({
+            text
+        })
     }
 
     componentDidMount() {
@@ -21,7 +24,7 @@ class Upload extends React.Component {
                     title: 'Corona Outbreak',
                     category: 'History and Current Affairs',
                     date: '2020-03-10T00:00:00',
-                    news: 'If not worked properly, corona can wash out half the humanity.If not worked properly, corona can wash out half the humanity.If not worked properly, corona can wash out half the humanity.If not worked properly, corona can wash out half the humanity.If not worked properly, corona can wash out half the humanity.If not worked properly, corona can wash out half the humanity.If not worked properly, corona can wash out half the humanity.'
+                    news: 'If not worked together, corona can wash out half the humanity.'
                 },
                 {
                     id: 2,

@@ -25,7 +25,8 @@ class NewsCard extends React.Component {
 	render() {
 
 		// console.log(this.props);
-		const { title, news, date, category, id } = this.props.news;
+		var { title, news, date, category, id } = this.props.news;
+		date = date.substring(0, date.indexOf('T'));
 
 		return (
 			// <div style={{ gridRowEnd: `span ${this.state.spans}` }}>
@@ -64,10 +65,10 @@ class NewsCard extends React.Component {
 						</div>
 						<div name = {id} className="extra content" id='card' style={{ backgroundColor: '#87bdd8', color: 'white' }}>
 							<span className="left floated like">
-							<i className="calendar outline icon"></i>
-							<label>
-								{date}
-							</label>
+								<i className="calendar outline icon"></i>
+								<label>
+									{date}
+								</label>
 							</span>
 							<span className="right floated star" id='card'>
 							<i className="list alternate outline icon"></i>
