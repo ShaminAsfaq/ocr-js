@@ -7,7 +7,7 @@ class Upload extends React.Component {
     state = {};
     initialState = {};
     element = {};
-    host = 'https://spring-boot-newspaper-archive.herokuapp.com';
+    host = 'http://spring-boot-newspaper-archive.herokuapp.com';
 
     constructor(props) {
         super(props);
@@ -83,7 +83,12 @@ class Upload extends React.Component {
             this.element = { title, category, date: new Date(this.state.date), news };
             console.log(this.element);
 
-            axios.post(`${this.host}/create_news`, this.element).then((result) => {
+            axios.post(`${this.host}/create_news`, this.element,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            }).then((result) => {
                 console.log(result);
             })
 
