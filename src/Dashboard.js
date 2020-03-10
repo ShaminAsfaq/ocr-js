@@ -10,9 +10,11 @@ class Upload extends React.Component {
     }
 
     onSearch = () => {
-        var text = document.getElementById('search').value;
+        // var text = document.getElementById('search').value;
+    }
+
+    componentDidMount() {
         this.setState({
-            text,
             news: [
                 {
                     id: 1,
