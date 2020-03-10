@@ -7,7 +7,7 @@ class Upload extends React.Component {
     state = {};
     initialState = {};
     element = {};
-    host = 'http://spring-boot-newspaper-archive.herokuapp.com';
+    host = 'https://spring-boot-newspaper-archive.herokuapp.com';
 
     constructor(props) {
         super(props);
