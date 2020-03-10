@@ -1,22 +1,17 @@
 import React from 'react';
-import fire from './fire';
-import worker from './tesseract';
-// import { createWorker } from 'tesseract.js';
-
-const { createWorker } = require('tesseract.js');
+// import worker from './tesseract';
+import { createWorker } from 'tesseract.js';
 
 class App extends React.Component {
 
     state = {};
     element = [];
 
-    worker = createWorker({
-        //   logger: m => console.log(m), // Add logger here
-    });
-
     onSubmit = (event) => {
         event.preventDefault();
-        fire.database().ref('news').push( this.state );
+        var { headline, type, date, text } = this.state
+
+        console.log(headline, type, date, text);
         document.getElementById("myForm").reset();
     }
 
@@ -44,9 +39,10 @@ class App extends React.Component {
                                 })
                             }}
                         >
-                            <option value="">Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="">Category</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Politics">Politics</option>
+                            <option value="Philosophy">Philosophy</option>
                         </select>
 
                     </div>
@@ -103,7 +99,14 @@ class App extends React.Component {
                                                     var blob = window.URL.createObjectURL(item);
                                                     this.worker.recognize(blob).then((text) => {
                                                         // console.log(`${blob}`);
-                                                        console.log(text.data.text);
+                                                        // console.log(text.data.text);
+                                                        this.setState((state) => {
+                                                            return { text: ( state.text?state.text + '\n' : '' ) + text.data.text };
+                                                        });
+
+                                                        document.getElementById('textarea').value = this.state.text;
+
+                                                        console.log(this.state.text)
                                                     }).then(() => {
                                                         // console.log(this.state.title)
                                                         delete this.state.title
@@ -112,7 +115,7 @@ class App extends React.Component {
                                                         })
 
                                                         // console.log(this.state.title)
-                                                        worker.terminate();
+                                                        this.worker.terminate();
                                                         console.log('--------- 4 ---------');
                                                     })
                                                 })
@@ -128,6 +131,7 @@ class App extends React.Component {
                     <div className="field">
                         <label>Story</label>
                         <textarea 
+                            id='textarea'
                             rows='20' 
                             style={{ resize: 'none' }}
                             placeholder="Your epic goes here!"
@@ -138,9 +142,7 @@ class App extends React.Component {
                 <button 
                     className="ui blue button"
                     type="button"
-                    // onClick={this.onSubmit}
-                    onClick={ () => {
-                    }}
+                    onClick={this.onSubmit}
                 >
                     Submit
                 </button>
