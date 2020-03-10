@@ -1,160 +1,39 @@
 import React from 'react';
-// import worker from './tesseract';
-import { createWorker } from 'tesseract.js';
+import Upload from './Upload';
+import Dashboard from './Dashboard';
 
-class App extends React.Component {
+import { BrowserRouter, Route, Switch, NavLink } from 'react-router-dom';
 
-    state = {};
-    element = [];
+const Menu = () => {
+    return(
+        <div className="ui top secondary pointing menu" style={{ backgroundColor: 'white', position: 'fixed', width: '100%', top: '0', zIndex: '10', height: '50px' }}>
+            <NavLink to="/dashboard" exact={true} className="item">
+                Home
+            </NavLink>
+            <NavLink to="/upload" className="item">
+                Upload
+            </NavLink>
+        </div>
+    )
+}
 
-    onSubmit = (event) => {
-        event.preventDefault();
-        var { headline, type, date, text } = this.state
-
-        console.log(headline, type, date, text);
-        document.getElementById("myForm").reset();
-    }
-
-    render(){
-        return(
-            <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
-                <div className="field">
-                    <label>Title</label>
-                    <input type="text" id="news-title" name="title" placeholder="Title of your chronicle"
-                        onChange={ (event) => {
-                            this.setState({
-                                headline: event.target.value
-                            })
-                        }}
-                    />
-                </div>
-
-                <div className="two fields">
-                    <div className="field">
-                        <label>Type</label>
-                        <select className="ui dropdown" 
-                            onChange ={ (event) => {
-                                this.setState({
-                                    type: event.target.value
-                                })
-                            }}
-                        >
-                            <option value="">Category</option>
-                            <option value="Sports">Sports</option>
-                            <option value="Politics">Politics</option>
-                            <option value="Philosophy">Philosophy</option>
-                        </select>
-
-                    </div>
-                    <div className="field">
-                        <label>Date</label>
-                        <input type="date" name="title" placeholder="Title of your chronicle"
-                                onChange={ (event) => {
-                                    this.setState({
-                                        date: event.target.value
-                                    })
-                                }}
-                        />
-                    </div>
-                </div>
-
-                <div
-                    style={{paddingBottom: '10px'}}
-                >
-                    <input hidden id="file" type="file" 
-                            onChange={(e) => {
-                                // console.log(e.target.files);
-                                this.setState({
-                                        title: 'Uploaded',
-                                        files: e.target.files
-                                })
-                            }
-                        }
-                        className="inputfile" id="upload"
-                        accept="image/*"
-                    />
-                    <label htmlFor="upload" className="ui green button">
-                        <i className="ui upload icon"></i> 
-                        Upload image
-                    </label>
-                    <label>{ (this.state.title ? this.state.title : 'Select title image') }</label>
-                </div>
-                <div
-                    style={{paddingBottom: '10px'}}
-                >
-                    <button 
-                        className="ui blue button" 
-                        type="button"
-                        onClick = {() => {
-                                    var list = Object.values(this.state.files);
-                                    var item = list[0];
-                                    console.log(item)
-                                    this.worker = createWorker({});
-                                    this.worker.load().then(() => {
-                                        console.log('--------- 1 ---------');
-                                        this.worker.loadLanguage('eng').then(() => {
-                                            console.log('--------- 2 ---------');
-                                            this.worker.initialize('eng').then(() => {
-                                                console.log('--------- 3 ---------');
-                                                    var blob = window.URL.createObjectURL(item);
-                                                    this.worker.recognize(blob).then((text) => {
-                                                        // console.log(`${blob}`);
-                                                        // console.log(text.data.text);
-                                                        this.setState((state) => {
-                                                            return { text: ( state.text?state.text + '\n' : '' ) + text.data.text };
-                                                        });
-
-                                                        document.getElementById('textarea').value = this.state.text;
-
-                                                        console.log(this.state.text)
-                                                    }).then(() => {
-                                                        // console.log(this.state.title)
-                                                        delete this.state.title
-                                                        this.setState({
-                                                            title: 'Select another image'
-                                                        })
-
-                                                        // console.log(this.state.title)
-                                                        this.worker.terminate();
-                                                        console.log('--------- 4 ---------');
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    }
-                        }
-                    >
-                    Extract News
-                    </button>
-                </div>
-                <div className="field">
-                    <div className="field">
-                        <label>Story</label>
-                        <textarea 
-                            id='textarea'
-                            rows='20' 
-                            style={{ resize: 'none' }}
-                            placeholder="Your epic goes here!"
-                        >
-                        </textarea>
-                    </div>
-                </div>
-                <button 
-                    className="ui blue button"
-                    type="button"
-                    onClick={this.onSubmit}
-                >
-                    Submit
-                </button>
-            </form>
-        );
-    }
+const App = () => {
+    return (
+        <BrowserRouter>
+            <div>
+                <Menu/>
+                <Switch>
+                    <Route path='/dashboard' component={Dashboard} exact={true}/>
+                    <Route path='/upload' component={Upload}/>
+                </Switch>
+            </div>
+        </BrowserRouter>
+    );
 }
 
 export {
     App as default
 }
-
 
 
 
