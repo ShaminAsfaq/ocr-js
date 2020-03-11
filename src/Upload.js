@@ -85,8 +85,7 @@ class Upload extends React.Component {
 
             axios.post(`${this.host}/create_news`, this.element,{
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 }
             }).then((result) => {
                 console.log(result);
