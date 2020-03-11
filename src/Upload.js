@@ -85,6 +85,7 @@ class Upload extends React.Component {
             // console.log(this.element);
 
             axios.post(`${this.host}/create_news`, this.element).then((result) => {
+
                 console.log(result);
             })
 
