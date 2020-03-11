@@ -8,7 +8,7 @@ class Upload extends React.Component {
     initialState = {};
     element = {};
     host = 'https://spring-boot-newspaper-archive.herokuapp.com';
-    // host = 'http://localhost:5000';
+    host = 'http://118.179.95.206:5000';
 
     constructor(props) {
         super(props);
@@ -77,26 +77,18 @@ class Upload extends React.Component {
     onSubmit = (event) => {
         event.preventDefault();
 
-        console.log(this.state)
+        // console.log(this.state)
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
             var { title, category, date, news } = this.state;
             this.element = { title, category, date: new Date(this.state.date), news };
-            console.log(this.element);
+            // console.log(this.element);
 
-            axios.post(`${this.host}/create_news`, this.element,{
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                //     // 'Access-Control-Allow-Headers': 'content-type'
-                },
-                crossorigin: 'anonymous'
-            }).then((result) => {
+            axios.post(`${this.host}/create_news`, this.element).then((result) => {
                 console.log(result);
             })
 
-            console.log(title, category, date, news);
+            // console.log(title, category, date, news);
             document.getElementById("myForm").reset();
             
             delete this.state.title;
