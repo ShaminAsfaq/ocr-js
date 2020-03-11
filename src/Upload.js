@@ -8,6 +8,7 @@ class Upload extends React.Component {
     initialState = {};
     element = {};
     host = 'https://spring-boot-newspaper-archive.herokuapp.com';
+    // host = 'http://localhost:5000';
 
     constructor(props) {
         super(props);
@@ -85,9 +86,12 @@ class Upload extends React.Component {
 
             axios.post(`${this.host}/create_news`, this.element,{
                 headers: {
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                }
+                    'Access-Control-Allow-Origin': '*',
+                //     // 'Access-Control-Allow-Headers': 'content-type'
+                },
+                crossorigin: 'anonymous'
             }).then((result) => {
                 console.log(result);
             })
