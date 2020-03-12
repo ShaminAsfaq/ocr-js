@@ -50,17 +50,17 @@ class NewsCard extends React.Component {
 						var date = footer.getElementsByClassName('left floated like')[0].getElementsByTagName('label')[0].innerHTML;
 						var category = footer.getElementsByClassName('right floated star')[0].getElementsByTagName('label')[0].innerHTML;
 
-						console.log(title);
-						console.log(news);
-						console.log(date);
-						console.log(category);
+						// console.log(title);
+						// console.log(news);
+						// console.log(date);
+						// console.log(category);
 					}}
 				>
 					<div name = {id} className="ui card" style={{ cursor: 'pointer', gridRowEnd: `span ${this.state.spans}`, width: '100%' }} ref={this.newsRef}>
 						<div name = {id} className="content" style={{ backgroundColor: '#b7d7e8' }}>
 							<div name = {id} className="header" id='card' style={{ color: 'black' }}>{title}</div>
 							<div name = {id} className="description" id='card' style={{ color: 'black' }}>
-								<p>{news}</p>
+								<p>{news.substring(0,200)}...</p>
 							</div>
 						</div>
 						<div name = {id} className="extra content" id='card' style={{ backgroundColor: '#87bdd8', color: 'white' }}>

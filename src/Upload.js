@@ -8,7 +8,8 @@ class Upload extends React.Component {
     initialState = {};
     element = {};
     host = 'https://spring-boot-newspaper-archive.herokuapp.com';
-    // host = 'http://118.179.95.206:5000';
+    host = 'http://118.179.95.206:5000';
+    host = 'http://localhost:5000';
 
     constructor(props) {
         super(props);
@@ -23,8 +24,21 @@ class Upload extends React.Component {
     //     }
     // }
 
+    componentDidMount() {
+        var url = `${this.host}/get_category_list`;
+        console.log(url);
+        axios.get(url).then((res) => {
+            this.setState({
+                categoryList: res.data
+            })
+            // console.log(this.state);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
     onExtraction = () => {
-        console.log(this.state.uploaded)
+        // console.log(this.state.uploaded)
         if(!this.state.uploaded) {
             this.setState({
                 error: 'Please select an image first.',
@@ -34,7 +48,7 @@ class Upload extends React.Component {
         } else {
             var list = Object.values(this.state.files);
             var item = list[0];
-            console.log(item)
+            // console.log(item)
             this.worker = createWorker({});
             this.worker.load().then(() => {
             console.log('--------- 1 ---------');
@@ -54,8 +68,7 @@ class Upload extends React.Component {
                                 });
 
                                 document.getElementById('textarea').value = this.state.news;
-
-                                console.log(this.state.news)
+                                // console.log(this.state.news)
                             }).then(() => {
                                 // console.log(this.state.image)
                                 delete this.state.image
@@ -80,13 +93,12 @@ class Upload extends React.Component {
         // console.log(this.state)
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
-            var { title, category, date, news } = this.state;
+            var { title, category, news } = this.state;
             this.element = { title, category, date: new Date(this.state.date), news };
             // console.log(this.element);
 
             axios.post(`${this.host}/create_news`, this.element).then((result) => {
-
-                console.log(result);
+                // console.log(result);
             })
 
             // console.log(title, category, date, news);
@@ -144,15 +156,21 @@ class Upload extends React.Component {
                         <label>Category</label>
                         <select className="ui dropdown" 
                             onChange ={ (event) => {
-                                this.setState({
-                                    category: event.target.value
-                                })
+                                if(event.target.value.length>0) {
+                                    this.setState({
+                                        category: event.target.value
+                                    }, () => {
+                                        // console.log(this.state.category)
+                                    })
+                                }
                             }}
+                            placeholder = "Category"
                         >
-                            <option value="">Category</option>
-                            <option value="Sports">Sports</option>
-                            <option value="Politics">Politics</option>
-                            <option value="Philosophy">Philosophy</option>
+                        {
+                            this.state.categoryList && Object.entries(this.state.categoryList).map(item => {
+                                return <option key = {item[0]} > {item[1]} </option>
+                            })
+                        }
                         </select>
                     </div>
                     <div className="field">

@@ -1,7 +1,10 @@
 import React from 'react';
 import NewsList from './News/NewsList';
+import axios from 'axios';
 
 class Upload extends React.Component {
+
+    host = 'http://localhost:5000';
 
     state = {};
     constructor(props) {
@@ -17,73 +20,17 @@ class Upload extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            news: [
-                {
-                    id: 1,
-                    title: 'Corona Outbreak',
-                    category: 'History and Current Affairs',
-                    date: '2020-03-10T00:00:00',
-                    news: 'If not worked together, corona can wash out half the humanity.'
-                },
-                {
-                    id: 2,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 3,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 4,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 5,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 6,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 7,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 8,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                },
-                {
-                    id: 9,
-                    title: 'Q7+6=13',
-                    category: 'Dark Mathematics',
-                    date: '2020-03-10T00:00:00',
-                    news: 'The formula to defeat COVID-19 has been found by a Dreamer in his dreams in the long night.'
-                }
-            ]
-        })
+        var url = `${this.host}/get_first_page`;
+        console.log(url);
+        axios.get(url).then((res) => {
+            this.setState({
+                news: res.data
+            }, () => {
+                // console.log(this.state.news);
+            })
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
     render(){

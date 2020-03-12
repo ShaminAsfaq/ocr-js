@@ -3,11 +3,9 @@ import React from 'react';
 import NewsCard from './NewsCard';
 
 const NewsList = (props) => {
-    // console.log(props)
-	const news = props.news.map((aNews) => {
+  	const news = props.news.content && props.news.content.map((aNews) => {
 		return (
             <div key={aNews.id} className="column">
-                
                     <NewsCard news={aNews}/>
                 
             </div>
