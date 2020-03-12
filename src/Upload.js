@@ -18,7 +18,7 @@ class Upload extends React.Component {
 
     componentDidMount() {
         var url = `${this.host}/get_category_list`;
-        console.log(url);
+        // console.log(url);
         axios.get(url).then((res) => {
             this.setState({
                 categoryList: res.data

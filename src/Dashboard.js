@@ -28,7 +28,7 @@ class Upload extends React.Component {
 
     componentDidMount() {
         var url = `${this.host}/get_latest_entries`;
-        console.log(url);
+        // console.log(url);
         axios.get(url).then((res) => {
             this.setState({
                 news: res.data
@@ -36,7 +36,7 @@ class Upload extends React.Component {
                 // console.log(this.state.news);
             })
             var url = `${this.host}/get_category_list`;
-            console.log(url);
+            // console.log(url);
             axios.get(url).then((res) => {
                 this.setState({
                     categoryList: res.data
