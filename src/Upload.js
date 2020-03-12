@@ -16,14 +16,6 @@ class Upload extends React.Component {
         this.state = { error: null, submittable: true };
     }
 
-    // componentDidUpdate() {
-    //     if(this.state.title && this.state.date && this.state.category && this.state.news) {
-    //         this.setState({
-    //             submittable: false
-    //         })
-    //     }
-    // }
-
     componentDidMount() {
         var url = `${this.host}/get_category_list`;
         console.log(url);
@@ -94,7 +86,7 @@ class Upload extends React.Component {
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
             var { title, category, news } = this.state;
-            this.element = { title, category, date: new Date(this.state.date), news };
+            this.element = { title, category, date: new Date(this.state.date), news, createdAt: new Date().toISOString() };
             // console.log(this.element);
 
             axios.post(`${this.host}/create_news`, this.element).then((result) => {
@@ -204,9 +196,9 @@ class Upload extends React.Component {
                     />
                     <label htmlFor="upload" className="ui green button">
                         <i className="ui upload icon"></i> 
-                        Upload image
+                        Select image
                     </label>
-                    <label style={{color: `${this.state.imageColor || 'black'}`}} >{ (this.state.image ? this.state.image : 'Select image') }</label>
+                    <label style={{color: `${this.state.imageColor || 'black'}`}} >{ (this.state.image ? this.state.image : '') }</label>
                 </div>
                 <div
                     style={{paddingBottom: '10px'}}
