@@ -8,8 +8,8 @@ class Upload extends React.Component {
     initialState = {};
     element = {};
     host = 'https://spring-boot-newspaper-archive.herokuapp.com';
-    host = 'http://118.179.95.206:5000';
-    host = 'http://localhost:5000';
+    // host = 'http://118.179.95.206:5000';
+    // host = 'http://localhost:5000';
 
     constructor(props) {
         super(props);
