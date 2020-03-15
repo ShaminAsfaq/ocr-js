@@ -19,6 +19,7 @@ class Upload extends React.Component {
         this.setState({
             text
         })
+
         this.searchObject = { keyword: text };
     }
 
@@ -28,7 +29,7 @@ class Upload extends React.Component {
 
         var url = `${this.host}/get_news`;
         axios.post(url, this.searchObject).then((res) => {
-            console.log(res)
+            // console.log(res)
             this.setState({
                 news: res.data
             })
