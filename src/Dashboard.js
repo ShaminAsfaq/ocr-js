@@ -4,8 +4,8 @@ import axios from 'axios';
 
 class Upload extends React.Component {
 
-    // host = 'http://localhost:5000';
     host = 'https://spring-boot-newspaper-archive.herokuapp.com';
+    // host = 'http://localhost:5000';
 
     state = {};
     searchObject = {};
@@ -19,17 +19,27 @@ class Upload extends React.Component {
         this.setState({
             text
         })
-        this.searchObject = { ...this.searchObject, text };
+        this.searchObject = { keyword: text };
     }
 
-    onSubmit = () => {
+    onSubmit = (event) => {
+        event.preventDefault();
+        // console.log(this.searchObject)
 
+        var url = `${this.host}/get_news`;
+        axios.post(url, this.searchObject).then((res) => {
+            console.log(res)
+            this.setState({
+                news: res.data
+            })
+        })
     }
 
     componentDidMount() {
         var url = `${this.host}/get_latest_entries`;
         // console.log(url);
         axios.get(url).then((res) => {
+            // console.log(res)
             this.setState({
                 news: res.data
             }, () => {
@@ -52,7 +62,7 @@ class Upload extends React.Component {
 
     render(){
         return(
-            <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
+            <form id="myForm" autoComplete="off" onSubmit={(this.onSubmit)} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
                 <div className="four fields">
                     <div className="field">
                         <label>Search keyword</label>
@@ -65,11 +75,13 @@ class Upload extends React.Component {
                         <select className="ui dropdown" 
                             onChange ={ (event) => {
                                 if(event.target.value.length>0) {
-                                    this.setState({
-                                        category: event.target.value
-                                    }, () => {
-                                        // console.log(this.state.category)
-                                    })
+                                    // this.setState({
+                                    //     category: event.target.value
+                                    // }, () => {
+                                    //     // console.log(this.state.category)
+                                    // })
+
+                                    this.searchObject.category = event.target.value;
                                 }
                             }}
                             placeholder = "Category"
@@ -88,6 +100,8 @@ class Upload extends React.Component {
                                     this.setState({
                                         date: new Date(event.target.value)
                                     })
+
+                                    this.searchObject.date = new Date(event.target.value);
                                 }}
                         />
                     </div>
@@ -104,9 +118,6 @@ class Upload extends React.Component {
                 </div>
 
                 <div>
-                    <label style={{fontWeight: 'bold', paddingRight: '1%'}}>
-                        Search result of:
-                    </label> 
                     { this.state.text }
                 </div>
                 <div style={{paddingTop: '5%'}}>

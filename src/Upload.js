@@ -86,6 +86,9 @@ class Upload extends React.Component {
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
             var { title, category, news } = this.state;
+
+            // news = news.replace(/\n+/, ' ');
+
             this.element = { title, category, date: new Date(this.state.date), news, createdAt: new Date().toISOString() };
             // console.log(this.element);
 
