@@ -53,27 +53,29 @@ class NewsDetails extends React.Component {
                 <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
                     <div className="title">
                         <div className="content">
-                            <h1 className="ui header">
+                            <h1 className="ui header" style={{paddingTop: '2%'}}>
                                 { 
                                     this.newsToDisplay.title
                                 }
                             </h1>
-                            <div className="ui sub header">
+                            <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                <p style={{color: 'grey', fontSize: '12px'}}>Date</p>
                                 { 
                                     this.newsToDisplay.date
                                 }
                             </div>
-                            <div className="ui sub header">
-                            { 
-                                `Category: ${this.newsToDisplay.category}`
-                            }
-                        </div>
+                            <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                <p style={{color: 'grey', fontSize: '12px'}}>Category</p>
+                                { 
+                                    `${this.newsToDisplay.category}`
+                                }
+                            </div>
                         </div>
                     </div>
                     <div className="ui text container" id="news-body" style={{ whiteSpace: 'pre-wrap', width: '100%', paddingTop: '2%', marginLeft: '0px !important', marginRight: '0px !important', maxWidth: '100% !important' }}>
-                    {
-                        this.newsToDisplay.news
-                    }
+                        {
+                            this.newsToDisplay.news
+                        }
                     </div>
                 </form>
             }

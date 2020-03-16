@@ -85,9 +85,12 @@ class Upload extends React.Component {
         // console.log(this.state)
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
-            var { title, category, news } = this.state;
+            var { title, category } = this.state;
 
             // news = news.replace(/\n+/, ' ');
+
+            var news = document.getElementById('textarea').value;
+            // console.log(news);
 
             this.element = { title, category, date: new Date(this.state.date), news, createdAt: new Date().toISOString() };
             // console.log(this.element);
@@ -104,6 +107,7 @@ class Upload extends React.Component {
             delete this.state.date;
             delete this.state.news;
 
+            //  eslint-disable-next-line
             this.state = { error: null };
             this.element = {};
         } else {
@@ -194,6 +198,7 @@ class Upload extends React.Component {
                                 })
                             }
                         }
+                        //  eslint-disable-next-line
                         className="inputfile" id="upload"
                         accept="image/*"
                     />
@@ -224,10 +229,10 @@ class Upload extends React.Component {
                             placeholder="Press 'Extract News'!"
                             onChange = {
                                 () => {
-                                    var news = document.getElementById('textarea').value;
-                                    this.setState({
-                                        news
-                                    })
+                                    // var news = document.getElementById('textarea').value;
+                                    // this.setState({
+                                    //     news
+                                    // })
                                     // console.log(this.state.text)
                                 }
                             }

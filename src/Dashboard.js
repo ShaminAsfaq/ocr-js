@@ -19,7 +19,6 @@ class Upload extends React.Component {
 
     onSearch = () => {
         var text = document.getElementById('search').value;
-        var keyword = text;
 
         // text.endsWith(" ") ? 'YES' : 'NO'
 
@@ -43,10 +42,12 @@ class Upload extends React.Component {
                         // console.log(item);
                         var ukey = this.uuid()
                         return (
+                            //  eslint-disable-next-line
                             <a
                                 key={ukey} 
                                 id={ukey}
                                 className="ui label"
+                                style={{marginTop: '1%'}}
                             >
                                 {item}
                                 <i 
@@ -84,8 +85,8 @@ class Upload extends React.Component {
             }
             document.getElementById('search').value = '';
         }
-        this.searchObject = { keyword };
-        console.log(this.searchObject)
+        // this.searchObject = { keyword };
+        // console.log(this.searchObject)
     }
 
     onSubmit = (event) => {
@@ -133,6 +134,7 @@ class Upload extends React.Component {
 
     uuid = () => {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        //  eslint-disable-next-line
           var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
           return v.toString(16);
         });
@@ -187,7 +189,7 @@ class Upload extends React.Component {
                     </div>
                 </div>
 
-                <div>
+                <div className="ui blue labels">
                     {
                         this.tags
                     }
