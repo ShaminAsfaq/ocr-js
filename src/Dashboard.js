@@ -5,7 +5,7 @@ import axios from 'axios';
 class Upload extends React.Component {
 
     host = 'https://spring-boot-newspaper-archive.herokuapp.com';
-    host = 'http://localhost:5000';
+    // host = 'http://localhost:5000';
 
     state = {};
     searchObject = {};
