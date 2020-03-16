@@ -143,7 +143,7 @@ class Upload extends React.Component {
     render(){
         return(
             <form id="myForm" autoComplete="off" onSubmit={(this.onSubmit)} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
-                <div className="four fields">
+                <div className="four fields search-fields">
                     <div className="field">
                         <label>Search keyword</label>
                         <input type="text" id="search" placeholder="Search something.."
