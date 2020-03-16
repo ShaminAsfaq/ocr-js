@@ -7,7 +7,6 @@ const NewsList = (props) => {
 		return (
             <div key={aNews.id} className="column">
                     <NewsCard news={aNews}/>
-                
             </div>
 		);
 	});
