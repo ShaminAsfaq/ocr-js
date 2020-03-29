@@ -4,7 +4,7 @@ import NewsCard from './NewsCard';
 const NewsList = (props) => {
   	const news = props.news.content && props.news.content.map((aNews) => {
 		return (
-            <div key={aNews.id} className="column" style={{width: '100%'}}>
+            <div key={aNews.id} className="column">
                     <NewsCard news={aNews}/>
             </div>
 		);

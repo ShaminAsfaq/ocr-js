@@ -1,17 +1,19 @@
 import React from 'react';
 import { createWorker } from 'tesseract.js';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+
+var server = require('./host.json');
 
 class Upload extends React.Component {
 
     state = {};
     initialState = {};
     element = {};
-    host = 'https://spring-boot-newspaper-archive.herokuapp.com';
-    // host = 'http://118.179.95.206:5000';
-    // host = 'http://localhost:5000';
+    host = server.url;
 
     constructor(props) {
+        // console.log(server)
         super(props);
         this.state = { error: null, submittable: true };
     }
@@ -79,25 +81,41 @@ class Upload extends React.Component {
         }
     }
 
-    onSubmit = (event) => {
+    onSubmit = async (event) => {
         event.preventDefault();
 
         // console.log(this.state)
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
             var { title, category } = this.state;
+            var uid = uuidv4();
 
             // news = news.replace(/\n+/, ' ');
 
             var news = document.getElementById('textarea').value;
             // console.log(news);
 
-            this.element = { title, category, date: new Date(this.state.date), news, createdAt: new Date().toISOString() };
+            this.element = { title, category, date: new Date(this.state.date), news, createdAt: new Date().toISOString(), photoId: uid };
             // console.log(this.element);
 
-            axios.post(`${this.host}/create_news`, this.element).then((result) => {
-                // console.log(result);
-            })
+            // console.log(this.state.photoList)
+
+            var formData = new FormData();
+            for(var idx = 0; idx < this.state.photoList.length; idx++) {
+                // console.log(this.state.photoList[idx][1])
+                formData.append('files', this.state.photoList[idx][1])
+            }
+
+            // console.log('--------------------------')
+            // console.log(this.state)
+            // console.log(this.element)
+            // console.log('--------------------------')
+
+            await axios.post(`${this.host}/upload_photo/${uid}`, formData)
+            await axios.post(`${this.host}/create_news`, this.element)
+        
+            // console.log(first)
+            // console.log(second)
 
             // console.log(title, category, date, news);
             document.getElementById("myForm").reset();
@@ -187,7 +205,7 @@ class Upload extends React.Component {
                 <div
                     style={{paddingBottom: '10px'}}
                 >
-                    <input hidden id="file" type="file" 
+                    <input hidden multiple id="file" type="file" 
                             onChange={(e) => {
                                 // console.log(e.target.files);
                                 this.setState({
@@ -204,7 +222,7 @@ class Upload extends React.Component {
                     />
                     <label htmlFor="upload" className="ui green button">
                         <i className="ui upload icon"></i> 
-                        Select image
+                        Select News
                     </label>
                     <label style={{color: `${this.state.imageColor || 'black'}`}} >{ (this.state.image ? this.state.image : '') }</label>
                 </div>
@@ -219,6 +237,37 @@ class Upload extends React.Component {
                     Extract News
                     </button>
                 </div>
+                <div
+                    style={{paddingBottom: '10px'}}
+                >
+                    <input hidden multiple id="photo" type="file" 
+                            onChange={(e) => {
+                                // console.log(e.target.files);
+
+                                var photoList = [];
+                                Object.entries(e.target.files).map(file => {
+                                    return photoList.push(file)
+                                })
+
+                                // photoList = photoList.join(", ");
+
+                                this.setState({
+                                        photoList
+                                }, () => {
+                                    // console.log(this.state.photoList)
+                                })
+                            }
+                        }
+                        //  eslint-disable-next-line
+                        className="inputfile" id="photo-upload"
+                        accept="image/*"
+                    />
+                    <label htmlFor="photo-upload" className="ui red button">
+                        <i className="ui upload icon"></i> 
+                        Upload photos
+                    </label>
+                </div>
+
                 <div className="field">
                     <div className="field">
                         <label>Story</label>

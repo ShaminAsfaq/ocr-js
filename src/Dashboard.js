@@ -2,10 +2,11 @@ import React from 'react';
 import NewsList from './News/NewsList';
 import axios from 'axios';
 
+var server = require('./host.json');
+
 class Upload extends React.Component {
 
-    host = 'https://spring-boot-newspaper-archive.herokuapp.com';
-    // host = 'http://localhost:5000';
+    host = server.url;
 
     state = {};
     searchObject = {};
@@ -194,7 +195,72 @@ class Upload extends React.Component {
                         this.tags
                     }
                 </div>
+
                 <div style={{paddingTop: '5%'}}>
+                    {
+                        this.state.news && this.state.news.length===0 &&
+                        <div className="ui four column stackable grid">
+                            <div className="column">
+                                <div className="ui raised segment">
+                                <div className="ui placeholder">
+                                    <div className="image header">
+                                    <div className="line"></div>
+                                    <div className="line"></div>
+                                    </div>
+                                    <div className="paragraph">
+                                    <div className="medium line"></div>
+                                    <div className="short line"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            
+                            <div className="column">
+                                <div className="ui raised segment">
+                                <div className="ui placeholder">
+                                    <div className="image header">
+                                    <div className="line"></div>
+                                    <div className="line"></div>
+                                    </div>
+                                    <div className="paragraph">
+                                    <div className="medium line"></div>
+                                    <div className="short line"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <div className="column">
+                                <div className="ui raised segment">
+                                <div className="ui placeholder">
+                                    <div className="image header">
+                                    <div className="line"></div>
+                                    <div className="line"></div>
+                                    </div>
+                                    <div className="paragraph">
+                                    <div className="medium line"></div>
+                                    <div className="short line"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <div className="column">
+                                <div className="ui raised segment">
+                                <div className="ui placeholder">
+                                    <div className="image header">
+                                    <div className="line"></div>
+                                    <div className="line"></div>
+                                    </div>
+                                    <div className="paragraph">
+                                    <div className="medium line"></div>
+                                    <div className="short line"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     <NewsList news={ this.state.news } />
                 </div>
             </form>
