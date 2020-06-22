@@ -100,21 +100,25 @@ class Upload extends React.Component {
 
         console.log(this.searchObject)
 
-        var url = `${this.host}/get_news`;
-        axios.post(url, this.searchObject).then((res) => {
-            // console.log(res)
-
-            if(res.data.content.length === 0) {
-                this.setState({
-                    nothingFound: true,
-                    news: res.data
-                })
-            } else {
-                this.setState({
-                    news: res.data,
-                    nothingFound: false
-                })
-            }
+        this.setState({
+            news: []
+        }, () => {
+            var url = `${this.host}/get_news`;
+            axios.post(url, this.searchObject).then((res) => {
+                // console.log(res)
+    
+                if(res.data.content.length === 0) {
+                    this.setState({
+                        nothingFound: true,
+                        news: res.data
+                    })
+                } else {
+                    this.setState({
+                        news: res.data,
+                        nothingFound: false
+                    })
+                }
+            })
         })
     }
 
@@ -195,7 +199,7 @@ class Upload extends React.Component {
                             type="button"
                             onClick={this.onSubmit}
                         >
-                            Let's Search
+                            Search
                         </button>
                     </div>
                 </div>
@@ -209,64 +213,78 @@ class Upload extends React.Component {
                 <div style={{paddingTop: '5%'}}>
                     {
                         this.state.news && this.state.news.length===0 &&
-                        <div className="ui four column stackable grid">
-                            <div className="column">
-                                <div className="ui raised segment">
-                                <div className="ui placeholder">
-                                    <div className="image header">
-                                    <div className="line"></div>
-                                    <div className="line"></div>
+                        <div>
+                            <div className="ui four column stackable grid">
+                                <div className="column">
+                                    <div className="ui raised segment">
+                                    <div className="ui placeholder">
+                                        <div className="image header">
+                                        <div className="line"></div>
+                                        <div className="line"></div>
+                                        </div>
+                                        <div className="paragraph">
+                                        <div className="medium line"></div>
+                                        <div className="short line"></div>
+                                        </div>
                                     </div>
-                                    <div className="paragraph">
-                                    <div className="medium line"></div>
-                                    <div className="short line"></div>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                            
-                            <div className="column">
-                                <div className="ui raised segment">
-                                <div className="ui placeholder">
-                                    <div className="image header">
-                                    <div className="line"></div>
-                                    <div className="line"></div>
-                                    </div>
-                                    <div className="paragraph">
-                                    <div className="medium line"></div>
-                                    <div className="short line"></div>
                                     </div>
                                 </div>
+                                
+                                <div className="column">
+                                    <div className="ui raised segment">
+                                    <div className="ui placeholder">
+                                        <div className="image header">
+                                        <div className="line"></div>
+                                        <div className="line"></div>
+                                        </div>
+                                        <div className="paragraph">
+                                        <div className="medium line"></div>
+                                        <div className="short line"></div>
+                                        </div>
+                                    </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="column">
-                                <div className="ui raised segment">
-                                <div className="ui placeholder">
-                                    <div className="image header">
-                                    <div className="line"></div>
-                                    <div className="line"></div>
+                                <div className="column">
+                                    <div className="ui raised segment">
+                                    <div className="ui placeholder">
+                                        <div className="image header">
+                                        <div className="line"></div>
+                                        <div className="line"></div>
+                                        </div>
+                                        <div className="paragraph">
+                                        <div className="medium line"></div>
+                                        <div className="short line"></div>
+                                        </div>
                                     </div>
-                                    <div className="paragraph">
-                                    <div className="medium line"></div>
-                                    <div className="short line"></div>
                                     </div>
                                 </div>
+
+                                <div className="column">
+                                    <div className="ui raised segment">
+                                    <div className="ui placeholder">
+                                        <div className="image header">
+                                        <div className="line"></div>
+                                        <div className="line"></div>
+                                        </div>
+                                        <div className="paragraph">
+                                        <div className="medium line"></div>
+                                        <div className="short line"></div>
+                                        </div>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="column">
-                                <div className="ui raised segment">
-                                <div className="ui placeholder">
-                                    <div className="image header">
-                                    <div className="line"></div>
-                                    <div className="line"></div>
+                            <div className="ui icon message">
+                                <i className="notched circle loading icon"></i>
+                                <div className="content">
+                                    <div className="header">
+                                        <p>
+                                            Hold my beer
+                                            <img class="ui mini right spaced image" src="https://www.pngitem.com/pimgs/m/185-1852725_emoji-beer-mug-hd-png-download.png"/>
+                                        </p>
                                     </div>
-                                    <div className="paragraph">
-                                    <div className="medium line"></div>
-                                    <div className="short line"></div>
-                                    </div>
-                                </div>
+                                    <p>While I fetch that content for you.</p>
                                 </div>
                             </div>
                         </div>
