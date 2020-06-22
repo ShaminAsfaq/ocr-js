@@ -291,20 +291,17 @@ class Upload extends React.Component {
                         />
                     </div>
                 </div>
-
-                <div className="two fields">
-                    
-                    <div className="field">
-                        <label>Search keyword</label>
-                        <input type="text" id="search" placeholder="Search something.."
-                            onChange={ this.onCommaPressed }
-                        />
-                    </div>
-                    <div className="ui blue labels" style={{paddingTop: '33px'}}>
-                    {
-                        this.tags
-                    }
-                    </div>
+                
+                <div className="field">
+                    <label>Keyword</label>
+                    <input type="text" id="search" placeholder="Tags to find the news easily.."
+                        onChange={ this.onCommaPressed }
+                    />
+                </div>
+                <div className="ui blue labels upload-keywords">
+                {
+                    this.tags
+                }
                 </div>
 
                 <div

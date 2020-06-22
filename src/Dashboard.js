@@ -1,6 +1,7 @@
 import React from 'react';
 import NewsList from './News/NewsList';
 import axios from 'axios';
+import './Dashboard.css';
 
 var server = require('./host.json');
 
@@ -275,7 +276,7 @@ class Upload extends React.Component {
                     
                     {
                         this.state.nothingFound &&
-                        <div>
+                        <div className="no-news-found-label">
                             There's no news of this sort.
                         </div>
                     }

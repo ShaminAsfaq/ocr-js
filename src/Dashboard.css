@@ -1,0 +1,47 @@
+@media(max-width: 70rem) {
+    .name-header {
+        margin-bottom: 6px;
+        margin-top: -6px !important;
+    }
+
+    .ui.red.ribbon.label {
+        font-size: 8px;
+    }
+
+    .ui.four.column.grid {
+        font-size: 12px;
+        display: grid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .ui.four.column.grid .column {
+        width: 90%;
+        text-align: center;
+    }
+
+    .ui.top.attached.segment {
+        line-height: 0;
+    }
+
+    .topButton {
+        font-size: 10px !important;
+    }
+
+    .ui.buttons {
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .search-box {
+        font-size: 10px !important;
+        flex-grow: 1 !important;
+    }
+
+    .no-news-found-label {
+        padding-top: 10% !important;
+    }
+
+}
