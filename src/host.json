@@ -1,6 +1,6 @@
 {
-    "url_dev": "http://localhost:5000",
-    "url": "https://spring-boot-newspaper-archive.herokuapp.com"
+    "url": "http://localhost:5000",
+    "url_dev": "https://spring-boot-newspaper-archive.herokuapp.com"
 }
 
 

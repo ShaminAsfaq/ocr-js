@@ -95,15 +95,25 @@ class Upload extends React.Component {
             var news = document.getElementById('textarea').value;
             // console.log(news);
 
-            this.element = { title, category, date: new Date(this.state.date), news, createdAt: new Date().toISOString(), photoId: uid };
+            this.element = { 
+                title, category, 
+                date: new Date(this.state.date), 
+                news, 
+                createdAt: new Date().toISOString(), 
+                photoId: uid,
+                keywordList: this.state.keyword
+            };
             // console.log(this.element);
 
             // console.log(this.state.photoList)
 
             var formData = new FormData();
-            for(var idx = 0; idx < this.state.photoList.length; idx++) {
-                // console.log(this.state.photoList[idx][1])
-                formData.append('files', this.state.photoList[idx][1])
+
+            if(this.state.photoList) {
+                for(var idx = 0; idx < this.state.photoList.length; idx++) {
+                    // console.log(this.state.photoList[idx][1])
+                    formData.append('files', this.state.photoList[idx][1])
+                }
             }
 
             // console.log('--------------------------')
@@ -154,6 +164,86 @@ class Upload extends React.Component {
         }
     }
 
+    onCommaPressed = () => {
+        var text = document.getElementById('search').value;
+
+        // text.endsWith(" ") ? 'YES' : 'NO'
+
+        if(text.endsWith(" ") || text.endsWith(",")) {
+            // console.log('Hell, yeah !');
+            text = text.substring(0, text.length - 1);
+
+            var arr = [];
+
+            if(this.state.keyword) {
+                arr = this.state.keyword
+            }
+
+            // console.log(arr)
+
+            if(text.length > 0){
+                this.setState({
+                    keyword: arr.concat([text])
+                }, () => {
+                    this.tags = this.state.keyword && this.state.keyword.map((item) => {
+                        // console.log(item);
+                        var ukey = this.uuid()
+                        return (
+                            //  eslint-disable-next-line
+                            <a
+                                key={ukey} 
+                                id={ukey}
+                                className="ui label"
+                                style={{marginTop: '1%'}}
+                            >
+                                {item}
+                                <i 
+                                    className="delete icon"
+                                    onClick={(e) => {
+                                        var parent = document.getElementById(`${ukey}`);
+                                        var child = document.getElementById(`${ukey}`).innerText;
+                                        console.log(child)
+                                        
+                                        var arr = this.state.keyword.filter((ele) => {
+                                            if(ele===child) {
+                                                console.log('Yeah, baby !')
+                                            }
+                                            return ele !== child;
+                                        });
+
+                                        console.log(arr);
+        
+                                        this.setState({
+                                            keyword: arr
+                                        }, () => {
+                                            parent.style.visibility = 'hidden';
+                                        })
+                                    }}
+                                >
+                                </i>
+                            </a>
+                        );
+                    });
+                    this.setState({
+                        tagsReady: true
+                    })
+                    // console.log(this.state)
+                })
+            }
+            document.getElementById('search').value = '';
+        }
+        // this.searchObject = { keyword };
+        // console.log(this.searchObject)
+    }
+
+    uuid = () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        //  eslint-disable-next-line
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+    }
+
     render(){
         return(
             <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
@@ -199,6 +289,21 @@ class Upload extends React.Component {
                                     })
                                 }}
                         />
+                    </div>
+                </div>
+
+                <div className="two fields">
+                    
+                    <div className="field">
+                        <label>Search keyword</label>
+                        <input type="text" id="search" placeholder="Search something.."
+                            onChange={ this.onCommaPressed }
+                        />
+                    </div>
+                    <div className="ui blue labels" style={{paddingTop: '33px'}}>
+                    {
+                        this.tags
+                    }
                     </div>
                 </div>
 

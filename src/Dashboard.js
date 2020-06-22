@@ -102,9 +102,18 @@ class Upload extends React.Component {
         var url = `${this.host}/get_news`;
         axios.post(url, this.searchObject).then((res) => {
             // console.log(res)
-            this.setState({
-                news: res.data
-            })
+
+            if(res.data.content.length === 0) {
+                this.setState({
+                    nothingFound: true,
+                    news: res.data
+                })
+            } else {
+                this.setState({
+                    news: res.data,
+                    nothingFound: false
+                })
+            }
         })
     }
 
@@ -261,7 +270,16 @@ class Upload extends React.Component {
                             </div>
                         </div>
                     }
+                    
                     <NewsList news={ this.state.news } />
+                    
+                    {
+                        this.state.nothingFound &&
+                        <div>
+                            There's no news of this sort.
+                        </div>
+                    }
+
                 </div>
             </form>
         );
