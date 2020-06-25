@@ -2,6 +2,7 @@ import React from 'react';
 import { createWorker } from 'tesseract.js';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import ImageList from './News/ImageList';
 
 var server = require('./host.json');
 
@@ -11,6 +12,28 @@ class Upload extends React.Component {
     initialState = {};
     element = {};
     host = server.url;
+
+    componentWillMount() {
+
+        var host = server.url
+        console.log(this.props.location.news)
+
+        if(this.props.location.news) {
+            var { id, title, category, date, news, photoId, keywordList } = { ...this.props.location.news }
+
+            if(keywordList===null) keywordList = []
+
+            axios.get(`${host}/get_photos_by_id/${photoId}`).then((value) => {
+                // console.log(value)
+                this.setState({
+                    ready: true,
+                    photoList: value.data,
+                    id, title, category, date, news, photoId, keyword: keywordList,
+                    error: undefined
+                })
+            })
+        }
+    }
 
     constructor(props) {
         // console.log(server)
@@ -84,22 +107,23 @@ class Upload extends React.Component {
     onSubmit = async (event) => {
         event.preventDefault();
 
-        // console.log(this.state)
+        console.log(this.state)
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
-            var { title, category } = this.state;
-            var uid = uuidv4();
+            var { id, title, category } = this.state;
+            var uid = this.props.location.news ? this.state.photoId : uuidv4();
 
             // news = news.replace(/\n+/, ' ');
 
             var news = document.getElementById('textarea').value;
             // console.log(news);
+            var createdAt = this.props.location.news ? new Date(this.state.date) : new Date().toISOString();
 
             this.element = { 
-                title, category, 
+                id, title, category, 
                 date: new Date(this.state.date), 
                 news, 
-                createdAt: new Date().toISOString(), 
+                createdAt,
                 photoId: uid,
                 keywordList: this.state.keyword
             };
@@ -116,10 +140,10 @@ class Upload extends React.Component {
                 }
             }
 
-            // console.log('--------------------------')
-            // console.log(this.state)
-            // console.log(this.element)
-            // console.log('--------------------------')
+            console.log('--------------------------')
+            console.log(this.state)
+            console.log(this.element)
+            console.log('--------------------------')
 
             await axios.post(`${this.host}/upload_photo/${uid}`, formData)
             await axios.post(`${this.host}/create_news`, this.element)
@@ -130,13 +154,11 @@ class Upload extends React.Component {
             // console.log(title, category, date, news);
             document.getElementById("myForm").reset();
             
-            delete this.state.title;
-            delete this.state.category;
-            delete this.state.date;
-            delete this.state.news;
+            //  Redirecting towards Dashboard
+            this.props.history.push('/')
 
             //  eslint-disable-next-line
-            this.state = { error: null };
+            this.state = { error: undefined };
             this.element = {};
         } else {
 
@@ -164,6 +186,46 @@ class Upload extends React.Component {
         }
     }
 
+    mapKeywordToView = (item) => {
+        // console.log(item);
+        var ukey = this.uuid()
+        return (
+            //  eslint-disable-next-line
+            <a
+                key={ukey} 
+                id={ukey}
+                className="ui label"
+                style={{marginTop: '1%'}}
+            >
+                {item}
+                <i 
+                    className="delete icon"
+                    onClick={(e) => {
+                        var parent = document.getElementById(`${ukey}`);
+                        var child = document.getElementById(`${ukey}`).innerText;
+                        console.log(child)
+                        
+                        var arr = this.state.keyword.filter((ele) => {
+                            if(ele===child) {
+                                console.log('Yeah, baby !')
+                            }
+                            return ele !== child;
+                        });
+
+                        console.log(arr);
+
+                        this.setState({
+                            keyword: arr
+                        }, () => {
+                            parent.style.visibility = 'hidden';
+                        })
+                    }}
+                >
+                </i>
+            </a>
+        );
+    };
+
     onCommaPressed = () => {
         var text = document.getElementById('search').value;
 
@@ -185,45 +247,7 @@ class Upload extends React.Component {
                 this.setState({
                     keyword: arr.concat([text])
                 }, () => {
-                    this.tags = this.state.keyword && this.state.keyword.map((item) => {
-                        // console.log(item);
-                        var ukey = this.uuid()
-                        return (
-                            //  eslint-disable-next-line
-                            <a
-                                key={ukey} 
-                                id={ukey}
-                                className="ui label"
-                                style={{marginTop: '1%'}}
-                            >
-                                {item}
-                                <i 
-                                    className="delete icon"
-                                    onClick={(e) => {
-                                        var parent = document.getElementById(`${ukey}`);
-                                        var child = document.getElementById(`${ukey}`).innerText;
-                                        console.log(child)
-                                        
-                                        var arr = this.state.keyword.filter((ele) => {
-                                            if(ele===child) {
-                                                console.log('Yeah, baby !')
-                                            }
-                                            return ele !== child;
-                                        });
-
-                                        console.log(arr);
-        
-                                        this.setState({
-                                            keyword: arr
-                                        }, () => {
-                                            parent.style.visibility = 'hidden';
-                                        })
-                                    }}
-                                >
-                                </i>
-                            </a>
-                        );
-                    });
+                    this.tags = this.state.keyword && this.state.keyword.map(this.mapKeywordToView);
                     this.setState({
                         tagsReady: true
                     })
@@ -245,8 +269,12 @@ class Upload extends React.Component {
     }
 
     render(){
+        var { title, category, date, news, photoId, keyword } = { ... this.state }
         return(
-            <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
+            <div>
+            {
+                !this.props.location.news &&
+                <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
                 <div className="field">
                     <label>Title</label>
                     <input type="text" id="news-title" placeholder="Title of the news"
@@ -407,7 +435,209 @@ class Upload extends React.Component {
                     </label>
                 </div>
             </form>
+            }
+            {
+                this.props.location.news &&
+                <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
+                <div className="field">
+                    <label>Title</label>
+                    <input type="text" id="news-title" placeholder="Title of the news" value={title}
+                        onChange={ (event) => {
+                            this.setState({
+                                title: event.target.value
+                            })
+                        }}
+                    />
+                </div>
+
+                <div className="two fields">
+                    <div className="field">
+                        <label>Category</label>
+                        <select className="ui dropdown" 
+                            onChange ={ (event) => {
+                                if(event.target.value.length>0) {
+                                    this.setState({
+                                        category: event.target.value
+                                    }, () => {
+                                        // console.log(this.state.category)
+                                    })
+                                }
+                            }}
+                            placeholder = "Category"
+                            value={category}
+                        >
+                        {
+                            this.state.categoryList && Object.entries(this.state.categoryList).map(item => {
+                                return <option key = {item[0]} > {item[1]} </option>
+                            })
+                        }
+                        </select>
+                    </div>
+                    <div className="field">
+                        <label>Date</label>
+                        <input type="date" name="date"
+                                onChange={ (event) => {
+                                    this.setState({
+                                        date: new Date(event.target.value)
+                                    })
+                                }}
+                                value={this.state.date}
+                        />
+                    </div>
+                </div>
+                
+                <div className="field">
+                    <label>Keyword</label>
+                    <input type="text" id="search" placeholder="Tags to find the news easily.."
+                        onChange={ this.onCommaPressed }
+                    />
+                </div>
+                <div className="ui blue labels upload-keywords">
+                {
+                    keyword ? keyword.map(this.mapKeywordToView) : []
+                }
+                </div>
+
+                {
+                    this.state.photoList &&
+                    <div style={{ padding: '60px 5% 5% 0%' }}>
+                        <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                <p style={{color: 'grey', fontSize: '12px'}}>Photos</p>
+                        </div>
+                        <div 
+                            onClick={ (e) => {
+                                this.setState({
+                                    photoSelected: e.target.src
+                                })
+                            }} 
+                            className="ui tiny images">
+                            {
+                                <ImageList images={this.state.photoList} />
+                            }
+                        </div>
+                    </div>
+                }
+
+                {
+                    this.state.photoSelected &&
+                    <div>
+                        <img alt='pictoria' className="ui medium rounded image" src={ this.state.photoSelected } />
+                    </div>
+                }
+
+                <div
+                    style={{paddingBottom: '10px', paddingTop: '10px'}}
+                >
+                    <input hidden multiple id="file" type="file" 
+                            onChange={(e) => {
+                                // console.log(e.target.files);
+                                this.setState({
+                                        image: 'Image Selected',
+                                        files: e.target.files,
+                                        uploaded: true,
+                                        imageColor: 'black'
+                                })
+                            }
+                        }
+                        //  eslint-disable-next-line
+                        className="inputfile" id="upload"
+                        accept="image/*"
+                    />
+                    <label htmlFor="upload" className="ui green button">
+                        <i className="ui upload icon"></i> 
+                        Select News
+                    </label>
+                    <label style={{color: `${this.state.imageColor || 'black'}`}} >{ (this.state.image ? this.state.image : '') }</label>
+                </div>
+                <div
+                    style={{paddingBottom: '10px'}}
+                >
+                    <button 
+                        className="ui blue button" 
+                        type="button"
+                        onClick = { this.onExtraction }
+                    >
+                    Extract News
+                    </button>
+                </div>
+                <div
+                    style={{paddingBottom: '10px'}}
+                >
+                    <input hidden multiple id="photo" type="file" 
+                            onChange={(e) => {
+                                // console.log(e.target.files);
+
+                                var photoList = [];
+                                Object.entries(e.target.files).map(file => {
+                                    return photoList.push(file)
+                                })
+
+                                // photoList = photoList.join(", ");
+
+                                this.setState({
+                                        photoList
+                                }, () => {
+                                    // console.log(this.state.photoList)
+                                })
+                            }
+                        }
+                        //  eslint-disable-next-line
+                        className="inputfile" id="photo-upload"
+                        accept="image/*"
+                    />
+                    <label htmlFor="photo-upload" className="ui red button">
+                        <i className="ui upload icon"></i> 
+                        Upload photos
+                    </label>
+                </div>
+
+                <div className="field">
+                    <div className="field">
+                        <label>Story</label>
+                        <textarea 
+                            id='textarea'
+                            rows='20' 
+                            style={{ resize: 'none' }}
+                            placeholder="Press 'Extract News'!"
+                            onChange = {
+                                () => {
+                                    var news = document.getElementById('textarea').value;
+                                    this.setState({
+                                        news
+                                    })
+                                    console.log(this.state.text)
+                                }
+                            }
+                            value={this.state.news}
+                        >
+                        </textarea>
+                    </div>
+                </div>
+                <button 
+                    className="ui blue button"
+                    type="button"
+                    onClick={
+                        this.onSubmit
+                    }
+                    disabled={
+                        // this.state.news && this.state.title && this.state.date && this.state.category ? 
+                        false 
+                        // : 
+                        // true
+                    }
+                >
+                    Submit
+                </button>
+                <div style={{paddingTop: '5%', color: 'red'}}>
+                    <label>
+                        { this.state.error || '' }
+                    </label>
+                </div>
+            </form>
+            }
+            </div>
         );
+
     }
 }
 

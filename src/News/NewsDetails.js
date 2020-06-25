@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import ImageList from '../News/ImageList';
+import { NavLink } from 'react-router-dom';
 
 import '../News/NewsDetails.css';
 
@@ -22,13 +23,13 @@ class NewsDetails extends React.Component {
             var url = `${host}/get_news_by_id/${id}`;
 
             axios.get(url).then((res) => {
-                var { title, category, date, news, photoId } = res.data;
-                // console.log(res)
+                var { id, title, category, date, news, photoId, keywordList } = res.data;
+                console.log(res.data)
 
                 date = date.substring(0, 10);
 
                 this.newsToDisplay = {
-                    title, category, date, news, ready: true
+                    id, title, category, date, news, ready: true, keywordList, photoId
                 }
 
 
@@ -51,8 +52,7 @@ class NewsDetails extends React.Component {
             {
                 this.state.ready === undefined && 
                 <div
-                    style={{ marginLeft: '60px', marginTop: '5%' }}
-                    className="ui placeholder"
+                    className="ui placeholder loading-image"
                 >
                     <div className="image header">
                         <div className="line"></div>
@@ -77,62 +77,88 @@ class NewsDetails extends React.Component {
             }   
             {
                 this.state.ready === true &&
-                <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
-                    <div className="title">
-                        <div className="content">
-                            <h1 className="ui header" style={{paddingTop: '2%'}}>
-                                { 
-                                    this.newsToDisplay.title
-                                }
-                            </h1>
-                            <div className="ui sub header" style={{fontSize: '1.2rem'}}>
-                                <p style={{color: 'grey', fontSize: '12px'}}>Date</p>
-                                { 
-                                    this.newsToDisplay.date
-                                }
-                            </div>
-                            <div className="ui sub header" style={{fontSize: '1.2rem'}}>
-                                <p style={{color: 'grey', fontSize: '12px'}}>Category</p>
-                                { 
-                                    `${this.newsToDisplay.category}`
-                                }
-                            </div>
-
-                            {
-                                this.state.images &&
-                                <div style={{ padding: '60px 5% 5% 0%' }}>
-                                    <div className="ui sub header" style={{fontSize: '1.2rem'}}>
-                                            <p style={{color: 'grey', fontSize: '12px'}}>Photos</p>
-                                    </div>
-                                    <div 
-                                        onClick={ (e) => {
-                                            this.setState({
-                                                photoSelected: e.target.src
-                                            })
-                                        }} 
-                                        className="ui tiny images">
-                                        {
-                                            <ImageList images={this.state.images} />
-                                        }
-                                    </div>
+                <div style={{ padding: '60px 5% 5% 5%' }}>
+                
+                    <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form">
+                        <div className="title">
+                            <div className="content">
+                                <h1 className="ui header" style={{paddingTop: '2%'}}>
+                                    { 
+                                        this.newsToDisplay.title
+                                    }
+                                </h1>
+                                <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                    <p style={{color: 'grey', fontSize: '12px'}}>Date</p>
+                                    { 
+                                        this.newsToDisplay.date
+                                    }
                                 </div>
-                            }
-
-                            {
-                                this.state.photoSelected &&
-                                <div>
-                                    <img alt='pictoria' className="ui medium rounded image" src={ this.state.photoSelected } />
+                                <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                    <p style={{color: 'grey', fontSize: '12px'}}>Category</p>
+                                    { 
+                                        `${this.newsToDisplay.category}`
+                                    }
                                 </div>
-                            }
 
+                                {
+                                    this.state.images &&
+                                    <div style={{ padding: '60px 5% 5% 0%' }}>
+                                        <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                                <p style={{color: 'grey', fontSize: '12px'}}>Photos</p>
+                                        </div>
+                                        <div 
+                                            onClick={ (e) => {
+                                                this.setState({
+                                                    photoSelected: e.target.src
+                                                })
+                                            }} 
+                                            className="ui tiny images">
+                                            {
+                                                <ImageList images={this.state.images} />
+                                            }
+                                        </div>
+                                    </div>
+                                }
+
+                                {
+                                    this.state.photoSelected &&
+                                    <div>
+                                        <img alt='pictoria' className="ui medium rounded image" src={ this.state.photoSelected } />
+                                    </div>
+                                }
+
+                            </div>
                         </div>
-                    </div>
-                    <div className="ui text container" id="news-body" style={{ whiteSpace: 'pre-wrap', width: '100%', paddingTop: '2%', marginLeft: '0px !important', marginRight: '0px !important', maxWidth: '100% !important' }}>
-                        {
-                            this.newsToDisplay.news
-                        }
-                    </div>
-                </form>
+                        <div className="ui text container" id="news-body" style={{ whiteSpace: 'pre-wrap', width: '100%', paddingTop: '2%', marginLeft: '0px !important', marginRight: '0px !important', maxWidth: '100% !important' }}>
+                            {
+                                this.newsToDisplay.news
+                            }
+                        </div>
+                        
+                        
+                        <NavLink to = {{
+                                pathname: '/upload',
+                                news: this.newsToDisplay,
+                            }}
+                            onClick = { () => {
+                                console.log(this.newsToDisplay)
+
+                            }}
+                        >
+                        
+                            <div 
+                                style={{
+                                    marginTop: '5%'
+                                }}
+                                className="ui button" tabIndex="0"
+                            >
+                                Edit News
+                            </div>
+
+                        </NavLink>
+                    </form>
+                
+                </div>
             }
             </div>
         );

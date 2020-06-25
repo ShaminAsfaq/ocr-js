@@ -93,15 +93,13 @@ class Upload extends React.Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        // console.log(this.searchObject)
 
         var keyword = this.state.keyword && this.state.keyword.toString().split(",").join(" ");
         this.searchObject.keyword = keyword || '';
 
-        console.log(this.searchObject)
-
         this.setState({
-            news: []
+            news: [],
+            nothingFound: false
         }, () => {
             var url = `${this.host}/get_news`;
             axios.post(url, this.searchObject).then((res) => {
@@ -212,80 +210,31 @@ class Upload extends React.Component {
 
                 <div style={{paddingTop: '5%'}}>
                     {
+                        //  Condition:
                         this.state.news && this.state.news.length===0 &&
                         <div>
-                            <div className="ui four column stackable grid">
-                                <div className="column">
-                                    <div className="ui raised segment">
-                                    <div className="ui placeholder">
-                                        <div className="image header">
-                                        <div className="line"></div>
-                                        <div className="line"></div>
-                                        </div>
-                                        <div className="paragraph">
-                                        <div className="medium line"></div>
-                                        <div className="short line"></div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="column">
-                                    <div className="ui raised segment">
-                                    <div className="ui placeholder">
-                                        <div className="image header">
-                                        <div className="line"></div>
-                                        <div className="line"></div>
-                                        </div>
-                                        <div className="paragraph">
-                                        <div className="medium line"></div>
-                                        <div className="short line"></div>
-                                        </div>
-                                    </div>
-                                    </div>
+                            
+                            {  
+                                //  Don't edit anything before this line EXCEPT for the "condition"
+                            }
+
+                            <div style={{
+                                paddingTop: "5%",
+                                fontFamily: "fantasy",
+                                fontSize: "large",
+                                textAlign: "center"
+                            }}>
+                                <div className="loader" style={{
+                                    display: "inline-block"
+                                }}>
                                 </div>
 
-                                <div className="column">
-                                    <div className="ui raised segment">
-                                    <div className="ui placeholder">
-                                        <div className="image header">
-                                        <div className="line"></div>
-                                        <div className="line"></div>
-                                        </div>
-                                        <div className="paragraph">
-                                        <div className="medium line"></div>
-                                        <div className="short line"></div>
-                                        </div>
+                                <h2 className="ui center aligned icon header">
+                                    <div style={{ paddingTop: "2%" }}>
+                                        Tranquila, fetching data.
                                     </div>
-                                    </div>
-                                </div>
+                                </h2>
 
-                                <div className="column">
-                                    <div className="ui raised segment">
-                                    <div className="ui placeholder">
-                                        <div className="image header">
-                                        <div className="line"></div>
-                                        <div className="line"></div>
-                                        </div>
-                                        <div className="paragraph">
-                                        <div className="medium line"></div>
-                                        <div className="short line"></div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="ui icon message">
-                                <i className="notched circle loading icon"></i>
-                                <div className="content">
-                                    <div className="header">
-                                        <p>
-                                            Hold my beer
-                                            <img class="ui mini right spaced image" src="https://www.pngitem.com/pimgs/m/185-1852725_emoji-beer-mug-hd-png-download.png"/>
-                                        </p>
-                                    </div>
-                                    <p>While I fetch that content for you.</p>
-                                </div>
                             </div>
                         </div>
                     }
@@ -294,9 +243,9 @@ class Upload extends React.Component {
                     
                     {
                         this.state.nothingFound &&
-                        <div className="no-news-found-label">
-                            There's no news of this sort.
-                        </div>
+                        <h2 className="no-news-found-label">
+                            No news found.
+                        </h2>
                     }
 
                 </div>
