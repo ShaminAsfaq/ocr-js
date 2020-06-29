@@ -11,7 +11,7 @@ class Upload extends React.Component {
     state = {};
     initialState = {};
     element = {};
-    host = server.url_dev;
+    host = server.url;
 
     componentWillMount() {
 
