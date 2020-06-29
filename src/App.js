@@ -22,7 +22,7 @@ const Menu = () => {
                 Home
             </NavLink>
             <NavLink to="/upload" className="item">
-                Upload
+                Upload/Update
             </NavLink>
         </div>
     )

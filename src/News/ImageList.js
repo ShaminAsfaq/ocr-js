@@ -10,7 +10,7 @@ const ImageList = (props) => {
                 style={{
                     cursor: 'pointer'
                 }}
-                alt='pictoria'
+                alt={img.id}
                 key={uuidv4()}
                 src={'data:image/jpeg;base64, ' + img.image.data}
             />

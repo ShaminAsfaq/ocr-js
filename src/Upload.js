@@ -11,25 +11,29 @@ class Upload extends React.Component {
     state = {};
     initialState = {};
     element = {};
-    host = server.url;
+    host = server.url_dev;
 
     componentWillMount() {
 
         var host = server.url
-        console.log(this.props.location.news)
+        // console.log(this.props.location.news)
 
         if(this.props.location.news) {
             var { id, title, category, date, news, photoId, keywordList } = { ...this.props.location.news }
 
             if(keywordList===null) keywordList = []
 
-            axios.get(`${host}/get_photos_by_id/${photoId}`).then((value) => {
-                // console.log(value)
-                this.setState({
-                    ready: true,
-                    photoList: value.data,
-                    id, title, category, date, news, photoId, keyword: keywordList,
-                    error: undefined
+            this.setState({
+                error: true
+            }, () => {
+                axios.get(`${host}/get_photos_by_id/${photoId}`).then((value) => {
+                    // console.log(value)
+                    this.setState({
+                        ready: true,
+                        oldPhotoList: value.data,
+                        id, title, category, date, news, photoId, keyword: keywordList,
+                        error: undefined
+                    })
                 })
             })
         }
@@ -63,43 +67,49 @@ class Upload extends React.Component {
                 imageColor: 'red'
             })
         } else {
-            var list = Object.values(this.state.files);
-            var item = list[0];
-            // console.log(item)
-            this.worker = createWorker({});
-            this.worker.load().then(() => {
-            console.log('--------- 1 ---------');
-                this.worker.loadLanguage('eng').then(() => {
-                    console.log('--------- 2 ---------');
-                    this.worker.initialize('eng').then(() => {
-                        console.log('--------- 3 ---------');
-                            var blob = window.URL.createObjectURL(item);
-                            this.worker.recognize(blob).then((text) => {
-                                // console.log(`${blob}`);
-                                // console.log(text.data.text);
-                                this.setState((state) => {
-                                    return {
-                                        error: undefined,
-                                        news: ( state.news?state.news + '\n' : '' ) + text.data.text
-                                    };
-                                });
 
-                                document.getElementById('textarea').value = this.state.news;
-                                // console.log(this.state.news)
-                            }).then(() => {
-                                // console.log(this.state.image)
-                                delete this.state.image
-                                this.setState({
-                                    image: 'Select another image',
-                                    imageColor: 'black'
+            this.setState({
+                extracting: true
+            }, () => {
+                var list = Object.values(this.state.files);
+                var item = list[0];
+                // console.log(item)
+                this.worker = createWorker({});
+                this.worker.load().then(() => {
+                console.log('--------- 1 ---------');
+                    this.worker.loadLanguage('eng').then(() => {
+                        console.log('--------- 2 ---------');
+                        this.worker.initialize('eng').then(() => {
+                            console.log('--------- 3 ---------');
+                                var blob = window.URL.createObjectURL(item);
+                                this.worker.recognize(blob).then((text) => {
+                                    // console.log(`${blob}`);
+                                    // console.log(text.data.text);
+                                    this.setState((state) => {
+                                        return {
+                                            error: undefined,
+                                            news: ( state.news?state.news + '\n' : '' ) + text.data.text
+                                        };
+                                    });
+
+                                    document.getElementById('textarea').value = this.state.news;
+                                    // console.log(this.state.news)
+                                }).then(() => {
+                                    // console.log(this.state.image)
+                                    delete this.state.image
+                                    this.setState({
+                                        image: 'Select another image',
+                                        imageColor: 'black',
+                                        extracting: false
+                                    })
+
+                                    // console.log(this.state.image)
+                                    this.worker.terminate();
+                                    console.log('--------- 4 ---------');
                                 })
-
-                                // console.log(this.state.image)
-                                this.worker.terminate();
-                                console.log('--------- 4 ---------');
                             })
                         })
-                    })
+                })
             })
         }
     }
@@ -107,59 +117,65 @@ class Upload extends React.Component {
     onSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(this.state)
+        // console.log(this.state)
 
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
-            var { id, title, category } = this.state;
-            var uid = this.props.location.news ? this.state.photoId : uuidv4();
 
-            // news = news.replace(/\n+/, ' ');
+            this.setState({
+                error: true
+            }, async () => {
+                var { id, title, category } = this.state;
+                var uid = this.props.location.news ? this.state.photoId : uuidv4();
 
-            var news = document.getElementById('textarea').value;
-            // console.log(news);
-            var createdAt = this.props.location.news ? new Date(this.state.date) : new Date().toISOString();
+                // news = news.replace(/\n+/, ' ');
 
-            this.element = { 
-                id, title, category, 
-                date: new Date(this.state.date), 
-                news, 
-                createdAt,
-                photoId: uid,
-                keywordList: this.state.keyword
-            };
-            // console.log(this.element);
+                var news = document.getElementById('textarea').value;
+                // console.log(news);
+                var createdAt = this.props.location.news ? new Date(this.state.date) : new Date().toISOString();
 
-            // console.log(this.state.photoList)
+                this.element = { 
+                    id, title, category, 
+                    date: new Date(this.state.date), 
+                    news, 
+                    createdAt,
+                    photoId: uid,
+                    keywordList: this.state.keyword
+                };
+                // console.log(this.element);
 
-            var formData = new FormData();
+                // console.log(this.state.photoList)
 
-            if(this.state.photoList) {
-                for(var idx = 0; idx < this.state.photoList.length; idx++) {
-                    // console.log(this.state.photoList[idx][1])
-                    formData.append('files', this.state.photoList[idx][1])
+                var formData = new FormData();
+
+                if(this.state.photoList) {
+                    for(var idx = 0; idx < this.state.photoList.length; idx++) {
+                        // console.log(this.state.photoList[idx][1])
+                        formData.append('files', this.state.photoList[idx][1])
+                    }
                 }
-            }
 
-            console.log('--------------------------')
-            console.log(this.state)
-            console.log(this.element)
-            console.log('--------------------------')
+                // console.log('--------------------------')
+                // console.log(this.state)
+                // console.log(this.state.photoList)
+                // console.log(this.element)
+                // console.log('--------------------------')
 
-            await axios.post(`${this.host}/upload_photo/${uid}`, formData)
-            await axios.post(`${this.host}/create_news`, this.element)
-        
-            // console.log(first)
-            // console.log(second)
-
-            // console.log(title, category, date, news);
-            document.getElementById("myForm").reset();
+                await axios.post(`${this.host}/upload_photo/${uid}`, formData)
+                await axios.post(`${this.host}/create_news`, this.element)
             
-            //  Redirecting towards Dashboard
-            this.props.history.push('/')
+                // console.log(first)
+                // console.log(second)
 
-            //  eslint-disable-next-line
-            this.state = { error: undefined };
-            this.element = {};
+                // console.log(title, category, date, news);
+                document.getElementById("myForm").reset();
+                
+                //  Redirecting towards Dashboard
+                this.props.history.push('/')
+
+                //  eslint-disable-next-line
+                this.state = { error: undefined };
+                this.element = {};
+            })
         } else {
 
             var error = '';
@@ -268,6 +284,22 @@ class Upload extends React.Component {
         });
     }
 
+    deletePhoto = () => {
+        this.setState({
+            photoDeletingFlag: true
+        }, async () => {
+            await axios.get(`${this.host}/delete_photo/${this.state.selectedPhotoAlt}`)
+
+            var newOldPhotoList = this.state.oldPhotoList.filter((photo) => photo.id!=this.state.selectedPhotoAlt)
+
+            this.setState({
+                photoDeletingFlag: false,
+                oldPhotoList: newOldPhotoList,
+                photoSelected: undefined
+            })
+        })
+    }
+
     render(){
         var { title, category, date, news, photoId, keyword } = { ... this.state }
         return(
@@ -366,7 +398,22 @@ class Upload extends React.Component {
                     >
                     Extract News
                     </button>
+                    {
+                        this.state.extracting &&
+                        <div style={{
+                            paddingTop: "10px",
+                            fontFamily: "fantasy",
+                            fontSize: "large",
+                            textAlign: "center",
+                        }}>
+                            <div className="loader-small" style={{
+                                // position: 'absolute'
+                            }}>
+                            </div>
+                        </div>
+                    }
                 </div>
+
                 <div
                     style={{paddingBottom: '10px'}}
                 >
@@ -376,6 +423,7 @@ class Upload extends React.Component {
 
                                 var photoList = [];
                                 Object.entries(e.target.files).map(file => {
+                                    console.log(file)
                                     return photoList.push(file)
                                 })
 
@@ -429,6 +477,21 @@ class Upload extends React.Component {
                 >
                     Submit
                 </button>
+
+                {
+                    this.state.error &&
+                    <div style={{
+                        paddingTop: "10px",
+                        fontFamily: "fantasy",
+                        fontSize: "large",
+                        textAlign: "center",
+                    }}>
+                        <div className="loader-small" style={{
+                            // position: 'absolute'
+                        }}>
+                        </div>
+                    </div>
+                }
                 <div style={{paddingTop: '5%', color: 'red'}}>
                     <label>
                         { this.state.error || '' }
@@ -441,7 +504,7 @@ class Upload extends React.Component {
                 <form id="myForm" autoComplete="off" onSubmit={this.onSubmit} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
                 <div className="field">
                     <label>Title</label>
-                    <input type="text" id="news-title" placeholder="Title of the news" value={title}
+                    <input type="text" id="news-title" placeholder="Title of the news" value={title || ''}
                         onChange={ (event) => {
                             this.setState({
                                 title: event.target.value
@@ -464,7 +527,7 @@ class Upload extends React.Component {
                                 }
                             }}
                             placeholder = "Category"
-                            value={category}
+                            value={category || ''}
                         >
                         {
                             this.state.categoryList && Object.entries(this.state.categoryList).map(item => {
@@ -481,7 +544,7 @@ class Upload extends React.Component {
                                         date: new Date(event.target.value)
                                     })
                                 }}
-                                value={this.state.date}
+                                value={this.state.date || ''}
                         />
                     </div>
                 </div>
@@ -499,7 +562,7 @@ class Upload extends React.Component {
                 </div>
 
                 {
-                    this.state.photoList &&
+                    this.state.oldPhotoList &&
                     <div style={{ padding: '60px 5% 5% 0%' }}>
                         <div className="ui sub header" style={{fontSize: '1.2rem'}}>
                                 <p style={{color: 'grey', fontSize: '12px'}}>Photos</p>
@@ -507,12 +570,13 @@ class Upload extends React.Component {
                         <div 
                             onClick={ (e) => {
                                 this.setState({
-                                    photoSelected: e.target.src
+                                    photoSelected: e.target.src,
+                                    selectedPhotoAlt: e.target.alt
                                 })
                             }} 
                             className="ui tiny images">
                             {
-                                <ImageList images={this.state.photoList} />
+                                <ImageList images={this.state.oldPhotoList} />
                             }
                         </div>
                     </div>
@@ -521,7 +585,32 @@ class Upload extends React.Component {
                 {
                     this.state.photoSelected &&
                     <div>
-                        <img alt='pictoria' className="ui medium rounded image" src={ this.state.photoSelected } />
+                        <img alt='pictoria' className="ui medium rounded image selected-image" src={ this.state.photoSelected } />
+                        
+                            <button
+                                className="ui blue button"
+                                type="button"
+                                onClick = { this.deletePhoto }
+                                style={{marginTop: '10px'}}
+                            >
+                            Delete
+                            </button>
+
+                            {
+                                this.state.photoDeletingFlag &&
+                                <div style={{
+                                    paddingTop: "10px",
+                                    fontFamily: "fantasy",
+                                    fontSize: "large",
+                                    textAlign: "center",
+                                }}>
+                                    <div className="loader-small" style={{
+                                        // position: 'absolute'
+                                    }}>
+                                    </div>
+                                </div>
+                            }
+                        
                     </div>
                 }
 
@@ -559,16 +648,33 @@ class Upload extends React.Component {
                     >
                     Extract News
                     </button>
+
+                    {
+                        this.state.extracting &&
+                        <div style={{
+                            paddingTop: "10px",
+                            fontFamily: "fantasy",
+                            fontSize: "large",
+                            textAlign: "center",
+                        }}>
+                            <div className="loader-small" style={{
+                                // position: 'absolute'
+                            }}>
+                            </div>
+                        </div>
+                    }
                 </div>
+
                 <div
                     style={{paddingBottom: '10px'}}
                 >
                     <input hidden multiple id="photo" type="file" 
                             onChange={(e) => {
-                                // console.log(e.target.files);
+                                // console.log(e.target.files); 
 
                                 var photoList = [];
                                 Object.entries(e.target.files).map(file => {
+                                    // console.log(file)
                                     return photoList.push(file)
                                 })
 
@@ -626,8 +732,24 @@ class Upload extends React.Component {
                         // true
                     }
                 >
-                    Submit
+                    UPDATE
                 </button>
+
+                {
+                    this.state.error &&
+                    <div style={{
+                        paddingTop: "10px",
+                        fontFamily: "fantasy",
+                        fontSize: "large",
+                        textAlign: "center",
+                    }}>
+                        <div className="loader-small" style={{
+                            // position: 'absolute'
+                        }}>
+                        </div>
+                    </div>
+                }
+
                 <div style={{paddingTop: '5%', color: 'red'}}>
                     <label>
                         { this.state.error || '' }

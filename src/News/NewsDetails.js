@@ -24,7 +24,7 @@ class NewsDetails extends React.Component {
 
             axios.get(url).then((res) => {
                 var { id, title, category, date, news, photoId, keywordList } = res.data;
-                console.log(res.data)
+                // console.log(res.data)
 
                 date = date.substring(0, 10);
 
@@ -141,8 +141,7 @@ class NewsDetails extends React.Component {
                                 news: this.newsToDisplay,
                             }}
                             onClick = { () => {
-                                console.log(this.newsToDisplay)
-
+                                // console.log(this.newsToDisplay)
                             }}
                         >
                         
