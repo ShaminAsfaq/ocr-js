@@ -353,7 +353,7 @@ class Upload extends React.Component {
                 </div>
                 
                 <div className="field">
-                    <label>Keyword</label>
+                    <label>Tag</label>
                     <input type="text" id="search" placeholder="Tags to find the news easily.."
                         onChange={ this.onCommaPressed }
                     />

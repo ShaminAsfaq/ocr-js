@@ -24,7 +24,7 @@ class Upload extends React.Component {
 
         // text.endsWith(" ") ? 'YES' : 'NO'
 
-        if(text.endsWith(" ") || text.endsWith(",")) {
+        if(text.endsWith(",")) {
             // console.log('Hell, yeah !');
             text = text.substring(0, text.length - 1);
 
@@ -88,7 +88,7 @@ class Upload extends React.Component {
             document.getElementById('search').value = '';
         }
         // this.searchObject = { keyword };
-        // console.log(this.searchObject)
+        // console.log(this.state.keyword)
     }
 
     onSubmit = (event) => {
@@ -97,6 +97,9 @@ class Upload extends React.Component {
         var keyword = this.state.keyword && this.state.keyword.toString().split(",").join(" ");
         this.searchObject.keyword = keyword || '';
 
+        keyword = this.searchObject.keyword ? this.searchObject.keyword + ' ' + document.getElementById('search').value : document.getElementById('search').value;
+        this.searchObject.keyword = keyword || '';
+        
         this.setState({
             news: [],
             nothingFound: false
@@ -158,7 +161,7 @@ class Upload extends React.Component {
             <form id="myForm" autoComplete="off" onSubmit={(this.onSubmit)} className="ui form" style={{ padding: '60px 5% 5% 5%' }}>
                 <div className="four fields search-fields">
                     <div className="field">
-                        <label>Search keyword</label>
+                        <label>Search</label>
                         <input type="text" id="search" placeholder="Search something.."
                             onChange={ this.onSearch }
                         />

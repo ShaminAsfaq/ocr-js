@@ -12,7 +12,20 @@ class NewsDetails extends React.Component {
     newsToDisplay = {};
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = { deleting: false }
+    }
+
+    onDelete = () => {
+
+        this.setState({
+            deleting: true
+        }, async () => {
+            var host = server.url;
+            var url = `${host}/delete_news_by_id/${this.newsToDisplay.id}`;
+    
+            await axios.get(url)
+            this.props.history.push('/')
+        })
     }
 
     componentDidMount() {
@@ -153,8 +166,30 @@ class NewsDetails extends React.Component {
                             >
                                 Edit News
                             </div>
-
                         </NavLink>
+                        <div 
+                            style={{
+                                marginTop: '5%'
+                            }}
+                            className="ui red button" tabIndex="0"
+                            onClick = { this.onDelete }
+                        >
+                            Delete News
+                        </div>
+                        {
+                            this.state.deleting &&
+                            <div style={{
+                                paddingTop: "10px",
+                                fontFamily: "fantasy",
+                                fontSize: "large",
+                                textAlign: "center",
+                            }}>
+                                <div className="loader-small" style={{
+                                    // position: 'absolute'
+                                }}>
+                                </div>
+                            </div>
+                        }
                     </form>
                 
                 </div>
