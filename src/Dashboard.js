@@ -21,30 +21,21 @@ class Upload extends React.Component {
 
     onSearch = () => {
         var text = document.getElementById('search').value;
-
-        // text.endsWith(" ") ? 'YES' : 'NO'
-
         if(text.endsWith(",")) {
-            // console.log('Hell, yeah !');
             text = text.substring(0, text.length - 1);
-
             var arr = [];
 
             if(this.state.keyword) {
                 arr = this.state.keyword
             }
 
-            // console.log(arr)
-
             if(text.length > 0){
                 this.setState({
                     keyword: arr.concat([text])
                 }, () => {
                     this.tags = this.state.keyword && this.state.keyword.map((item) => {
-                        // console.log(item);
                         var ukey = this.uuid()
                         return (
-                            //  eslint-disable-next-line
                             <a
                                 key={ukey} 
                                 id={ukey}
@@ -57,16 +48,10 @@ class Upload extends React.Component {
                                     onClick={(e) => {
                                         var parent = document.getElementById(`${ukey}`);
                                         var child = document.getElementById(`${ukey}`).innerText;
-                                        console.log(child)
                                         
                                         var arr = this.state.keyword.filter((ele) => {
-                                            if(ele===child) {
-                                                console.log('Yeah, baby !')
-                                            }
                                             return ele !== child;
                                         });
-
-                                        console.log(arr);
         
                                         this.setState({
                                             keyword: arr
@@ -125,21 +110,15 @@ class Upload extends React.Component {
 
     componentDidMount() {
         var url = `${this.host}/get_latest_entries`;
-        // console.log(url);
         axios.get(url).then((res) => {
-            // console.log(res)
             this.setState({
                 news: res.data
-            }, () => {
-                // console.log(this.state.news);
             })
             var url = `${this.host}/get_category_list`;
-            // console.log(url);
             axios.get(url).then((res) => {
                 this.setState({
                     categoryList: res.data
                 })
-                // console.log(this.state);
             }).catch((err) => {
                 console.log(err);
             });

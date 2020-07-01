@@ -14,9 +14,7 @@ class Upload extends React.Component {
     host = server.url;
 
     componentWillMount() {
-
         var host = server.url
-        // console.log(this.props.location.news)
 
         if(this.props.location.news) {
             var { id, title, category, date, news, photoId, keywordList } = { ...this.props.location.news }
@@ -27,7 +25,6 @@ class Upload extends React.Component {
                 error: true
             }, () => {
                 axios.get(`${host}/get_photos_by_id/${photoId}`).then((value) => {
-                    // console.log(value)
                     this.setState({
                         ready: true,
                         oldPhotoList: value.data,
@@ -40,26 +37,22 @@ class Upload extends React.Component {
     }
 
     constructor(props) {
-        // console.log(server)
         super(props);
         this.state = { error: null, submittable: true };
     }
 
     componentDidMount() {
         var url = `${this.host}/get_category_list`;
-        // console.log(url);
         axios.get(url).then((res) => {
             this.setState({
                 categoryList: res.data
             })
-            // console.log(this.state);
         }).catch((err) => {
             console.log(err);
         });
     }
 
     onExtraction = () => {
-        // console.log(this.state.uploaded)
         if(!this.state.uploaded) {
             this.setState({
                 error: 'Please select an image first.',
@@ -73,7 +66,7 @@ class Upload extends React.Component {
             }, () => {
                 var list = Object.values(this.state.files);
                 var item = list[0];
-                // console.log(item)
+
                 this.worker = createWorker({});
                 this.worker.load().then(() => {
                 console.log('--------- 1 ---------');
@@ -117,8 +110,6 @@ class Upload extends React.Component {
     onSubmit = async (event) => {
         event.preventDefault();
 
-        // console.log(this.state)
-
         if(this.state.error===undefined || (this.state.error!=null && this.state.error.length===0)) {
 
             this.setState({
@@ -127,10 +118,7 @@ class Upload extends React.Component {
                 var { id, title, category } = this.state;
                 var uid = this.props.location.news ? this.state.photoId : uuidv4();
 
-                // news = news.replace(/\n+/, ' ');
-
                 var news = document.getElementById('textarea').value;
-                // console.log(news);
                 var createdAt = this.props.location.news ? new Date(this.state.date) : new Date().toISOString();
 
                 this.element = { 
@@ -141,38 +129,20 @@ class Upload extends React.Component {
                     photoId: uid,
                     keywordList: this.state.keyword
                 };
-                // console.log(this.element);
-
-                // console.log(this.state.photoList)
 
                 var formData = new FormData();
-
                 if(this.state.photoList) {
                     for(var idx = 0; idx < this.state.photoList.length; idx++) {
-                        // console.log(this.state.photoList[idx][1])
                         formData.append('files', this.state.photoList[idx][1])
                     }
                 }
 
-                // console.log('--------------------------')
-                // console.log(this.state)
-                // console.log(this.state.photoList)
-                // console.log(this.element)
-                // console.log('--------------------------')
-
                 await axios.post(`${this.host}/upload_photo/${uid}`, formData)
                 await axios.post(`${this.host}/create_news`, this.element)
             
-                // console.log(first)
-                // console.log(second)
-
-                // console.log(title, category, date, news);
                 document.getElementById("myForm").reset();
-                
-                //  Redirecting towards Dashboard
                 this.props.history.push('/')
 
-                //  eslint-disable-next-line
                 this.state = { error: undefined };
                 this.element = {};
             })
@@ -203,10 +173,8 @@ class Upload extends React.Component {
     }
 
     mapKeywordToView = (item) => {
-        // console.log(item);
         var ukey = this.uuid()
         return (
-            //  eslint-disable-next-line
             <a
                 key={ukey} 
                 id={ukey}
@@ -219,16 +187,9 @@ class Upload extends React.Component {
                     onClick={(e) => {
                         var parent = document.getElementById(`${ukey}`);
                         var child = document.getElementById(`${ukey}`).innerText;
-                        console.log(child)
-                        
                         var arr = this.state.keyword.filter((ele) => {
-                            if(ele===child) {
-                                console.log('Yeah, baby !')
-                            }
                             return ele !== child;
                         });
-
-                        console.log(arr);
 
                         this.setState({
                             keyword: arr
@@ -247,7 +208,7 @@ class Upload extends React.Component {
 
         // text.endsWith(" ") ? 'YES' : 'NO'
 
-        if(text.endsWith(" ") || text.endsWith(",")) {
+        if(text.endsWith(",")) {
             // console.log('Hell, yeah !');
             text = text.substring(0, text.length - 1);
 
@@ -326,8 +287,6 @@ class Upload extends React.Component {
                                 if(event.target.value.length>0) {
                                     this.setState({
                                         category: event.target.value
-                                    }, () => {
-                                        // console.log(this.state.category)
                                     })
                                 }
                             }}
@@ -369,7 +328,6 @@ class Upload extends React.Component {
                 >
                     <input hidden multiple id="file" type="file" 
                             onChange={(e) => {
-                                // console.log(e.target.files);
                                 this.setState({
                                         image: 'Image Selected',
                                         files: e.target.files,
@@ -378,7 +336,7 @@ class Upload extends React.Component {
                                 })
                             }
                         }
-                        //  eslint-disable-next-line
+
                         className="inputfile" id="upload"
                         accept="image/*"
                     />
@@ -406,9 +364,7 @@ class Upload extends React.Component {
                             fontSize: "large",
                             textAlign: "center",
                         }}>
-                            <div className="loader-small" style={{
-                                // position: 'absolute'
-                            }}>
+                            <div className="loader-small">
                             </div>
                         </div>
                     }
@@ -419,24 +375,18 @@ class Upload extends React.Component {
                 >
                     <input hidden multiple id="photo" type="file" 
                             onChange={(e) => {
-                                // console.log(e.target.files);
-
                                 var photoList = [];
                                 Object.entries(e.target.files).map(file => {
                                     console.log(file)
                                     return photoList.push(file)
                                 })
 
-                                // photoList = photoList.join(", ");
-
                                 this.setState({
                                         photoList
-                                }, () => {
-                                    // console.log(this.state.photoList)
                                 })
                             }
                         }
-                        //  eslint-disable-next-line
+                        
                         className="inputfile" id="photo-upload"
                         accept="image/*"
                     />
@@ -454,15 +404,6 @@ class Upload extends React.Component {
                             rows='20' 
                             style={{ resize: 'none' }}
                             placeholder="Press 'Extract News'!"
-                            onChange = {
-                                () => {
-                                    // var news = document.getElementById('textarea').value;
-                                    // this.setState({
-                                    //     news
-                                    // })
-                                    // console.log(this.state.text)
-                                }
-                            }
                         >
                         </textarea>
                     </div>
@@ -486,9 +427,7 @@ class Upload extends React.Component {
                         fontSize: "large",
                         textAlign: "center",
                     }}>
-                        <div className="loader-small" style={{
-                            // position: 'absolute'
-                        }}>
+                        <div className="loader-small">
                         </div>
                     </div>
                 }
@@ -521,8 +460,6 @@ class Upload extends React.Component {
                                 if(event.target.value.length>0) {
                                     this.setState({
                                         category: event.target.value
-                                    }, () => {
-                                        // console.log(this.state.category)
                                     })
                                 }
                             }}
@@ -604,9 +541,7 @@ class Upload extends React.Component {
                                     fontSize: "large",
                                     textAlign: "center",
                                 }}>
-                                    <div className="loader-small" style={{
-                                        // position: 'absolute'
-                                    }}>
+                                    <div className="loader-small">
                                     </div>
                                 </div>
                             }
@@ -619,7 +554,6 @@ class Upload extends React.Component {
                 >
                     <input hidden multiple id="file" type="file" 
                             onChange={(e) => {
-                                // console.log(e.target.files);
                                 this.setState({
                                         image: 'Image Selected',
                                         files: e.target.files,
@@ -628,7 +562,7 @@ class Upload extends React.Component {
                                 })
                             }
                         }
-                        //  eslint-disable-next-line
+
                         className="inputfile" id="upload"
                         accept="image/*"
                     />
@@ -657,9 +591,7 @@ class Upload extends React.Component {
                             fontSize: "large",
                             textAlign: "center",
                         }}>
-                            <div className="loader-small" style={{
-                                // position: 'absolute'
-                            }}>
+                            <div className="loader-small">
                             </div>
                         </div>
                     }
@@ -670,24 +602,17 @@ class Upload extends React.Component {
                 >
                     <input hidden multiple id="photo" type="file" 
                             onChange={(e) => {
-                                // console.log(e.target.files); 
-
                                 var photoList = [];
                                 Object.entries(e.target.files).map(file => {
-                                    // console.log(file)
                                     return photoList.push(file)
                                 })
 
-                                // photoList = photoList.join(", ");
-
                                 this.setState({
                                         photoList
-                                }, () => {
-                                    // console.log(this.state.photoList)
                                 })
                             }
                         }
-                        //  eslint-disable-next-line
+
                         className="inputfile" id="photo-upload"
                         accept="image/*"
                     />
@@ -743,9 +668,7 @@ class Upload extends React.Component {
                         fontSize: "large",
                         textAlign: "center",
                     }}>
-                        <div className="loader-small" style={{
-                            // position: 'absolute'
-                        }}>
+                        <div className="loader-small">
                         </div>
                     </div>
                 }

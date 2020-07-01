@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import ImageList from '../News/ImageList';
 import { NavLink } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 import '../News/NewsDetails.css';
 
@@ -14,6 +15,30 @@ class NewsDetails extends React.Component {
         super(props);
         this.state = { deleting: false }
     }
+
+    uuid = () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        //  eslint-disable-next-line
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+    }
+
+    mapKeywordToView = (item) => {
+        // console.log(item);
+        var ukey = this.uuid()
+        return (
+            //  eslint-disable-next-line
+            <a
+                key={ukey} 
+                id={ukey}
+                className="ui label"
+                style={{marginTop: '1%'}}
+            >
+                {item}
+            </a>
+        );
+    };
 
     onDelete = () => {
 
@@ -48,9 +73,14 @@ class NewsDetails extends React.Component {
 
                 axios.get(`${host}/get_photos_by_id/${photoId}`).then((value) => {
                     // console.log(value)
+                    let user = localStorage.getItem('user');
+                    user = JSON.parse(user);
+
                     this.setState({
                         ready: true,
-                        images: value.data
+                        images: value.data,
+                        tags: keywordList && keywordList.map(this.mapKeywordToView),
+                        role: user.role
                     })
                 })
             })
@@ -113,6 +143,15 @@ class NewsDetails extends React.Component {
                                     }
                                 </div>
 
+                                <div className="ui sub header" style={{fontSize: '1.2rem'}}>
+                                    <p style={{color: 'grey', fontSize: '12px'}}>Tags</p>
+                                    <div className="ui blue labels upload-keywords">
+                                    {
+                                        this.state.tags
+                                    }
+                                    </div>
+                                </div>
+
                                 {
                                     this.state.images &&
                                     <div style={{ padding: '60px 5% 5% 0%' }}>
@@ -148,34 +187,39 @@ class NewsDetails extends React.Component {
                             }
                         </div>
                         
-                        
-                        <NavLink to = {{
-                                pathname: '/upload',
-                                news: this.newsToDisplay,
-                            }}
-                            onClick = { () => {
-                                // console.log(this.newsToDisplay)
-                            }}
-                        >
-                        
+                        {
+                            this.state.role==='admin' &&
+                            <NavLink to = {{
+                                    pathname: '/upload',
+                                    news: this.newsToDisplay,
+                                }}
+                                onClick = { () => {
+                                    // console.log(this.newsToDisplay)
+                                }}
+                            >
+                            
+                                <div 
+                                    style={{
+                                        marginTop: '5%'
+                                    }}
+                                    className="ui button" tabIndex="0"
+                                >
+                                    Edit News
+                                </div>
+                            </NavLink>
+                        }
+                        {
+                            this.state.role==='admin' &&
                             <div 
                                 style={{
                                     marginTop: '5%'
                                 }}
-                                className="ui button" tabIndex="0"
+                                className="ui red button" tabIndex="0"
+                                onClick = { this.onDelete }
                             >
-                                Edit News
+                                Delete News
                             </div>
-                        </NavLink>
-                        <div 
-                            style={{
-                                marginTop: '5%'
-                            }}
-                            className="ui red button" tabIndex="0"
-                            onClick = { this.onDelete }
-                        >
-                            Delete News
-                        </div>
+                        }
                         {
                             this.state.deleting &&
                             <div style={{
