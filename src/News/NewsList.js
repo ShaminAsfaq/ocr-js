@@ -19,25 +19,3 @@ const NewsList = (props) => {
 
 
 export default NewsList;
-
-/*
-
-<div class="ui three column grid">
-  <div class="column">
-    <div class="ui segment">
-      <img>
-    </div>
-  </div>
-  <div class="column">
-    <div class="ui segment">
-      <img>
-    </div>
-  </div>
-  <div class="column">
-    <div class="ui segment">
-      <img>
-    </div>
-  </div>
-</div>
-
-*/

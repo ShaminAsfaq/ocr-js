@@ -121,13 +121,17 @@ class Upload extends React.Component {
                 var news = document.getElementById('textarea').value;
                 var createdAt = this.props.location.news ? new Date(this.state.date) : new Date().toISOString();
 
+                var keyList = this.state.keyword.map(key=> {
+                    return key && key.toLowerCase()
+                })
+
                 this.element = { 
                     id, title, category, 
                     date: new Date(this.state.date), 
                     news, 
                     createdAt,
                     photoId: uid,
-                    keywordList: this.state.keyword
+                    keywordList: keyList
                 };
 
                 var formData = new FormData();

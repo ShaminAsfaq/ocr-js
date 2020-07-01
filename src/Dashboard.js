@@ -67,13 +67,10 @@ class Upload extends React.Component {
                     this.setState({
                         tagsReady: true
                     })
-                    // console.log(this.state)
                 })
             }
             document.getElementById('search').value = '';
         }
-        // this.searchObject = { keyword };
-        // console.log(this.state.keyword)
     }
 
     onSubmit = (event) => {
